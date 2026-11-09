@@ -1,0 +1,8 @@
+build-dir/
+.export/
+export-dir/
+.flatpak-builder/
+dist/
+dist-gjs/
+*.flatpak
+node_modules/

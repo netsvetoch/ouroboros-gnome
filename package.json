@@ -1,0 +1,12 @@
+{
+  "name": "ouroboros-ts-client",
+  "version": "0.6.0",
+  "type": "module",
+  "description": "Ouroboros GTK4/Libadwaita client in TypeScript (Node 26 toolchain, GJS runtime for UI)",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.gjs.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.gjs.json --noEmit",
+    "check": "node dist/cli.js check",
+    "dev:cli": "node dist/cli.js"
+  }
+}

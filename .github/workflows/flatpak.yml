@@ -1,0 +1,63 @@
+name: flatpak
+
+# Релизные бандлы собираются здесь, на гитхабе, а не у нас локально:
+# - пуш тега v* собирает flatpak из GNOME 51 SDK и публикует .flatpak в Release;
+# - ручной запуск (workflow_dispatch) собирает тот же бандл как artifact без релиза.
+# Секретов не нужно: используется встроенный secrets.GITHUB_TOKEN.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install flatpak
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+      - name: Install GNOME 51 SDK and node/typescript extensions
+        run: |
+          set -eux
+          flatpak install --user -y flathub org.gnome.Sdk//51 org.gnome.Platform//51
+          flatpak install --user -y flathub org.freedesktop.Sdk.Extension.node26//26.08 org.freedesktop.Sdk.Extension.typescript//26.08
+
+      - name: Build flatpak
+        run: |
+          set -eux
+          flatpak-builder --user --force-clean build-dir io.github.ouroboros.Client.json
+          flatpak build-export export-dir build-dir
+          BUNDLE="ouroboros-client-${GITHUB_REF_NAME:-local}.flatpak"
+          flatpak build-bundle export-dir "$BUNDLE" io.github.ouroboros.Client
+          ls -la *.flatpak
+
+      - name: Upload bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ouroboros-client-flatpak
+          path: "*.flatpak"
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ouroboros-client-flatpak
+      - name: Publish GitHub Release with .flatpak
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.flatpak"
+          generate_release_notes: true

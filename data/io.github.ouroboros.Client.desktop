@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Ouroboros
+GenericName=Ouroboros AI client
+Comment=GTK4 клиент Ouroboros (TypeScript)
+Exec=ouroboros-client
+Icon=io.github.ouroboros.Client
+Terminal=false
+Type=Application
+Categories=Network;Chat;Utility;
+Keywords=ouroboros;ai;chat;
+StartupWMClass=io.github.ouroboros.Client

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.ouroboros.Client</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Ouroboros</name>
+  <summary>GTK4 клиент Ouroboros на TypeScript</summary>
+  <description>
+    <p>Чат, задачи, проекты и решения поверх официального gateway (REST + /ws).</p>
+  </description>
+  <launchable type="desktop-id">io.github.ouroboros.Client.desktop</launchable>
+  <icon type="stock">io.github.ouroboros.Client</icon>
+</component>

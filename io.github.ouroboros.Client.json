@@ -1,0 +1,54 @@
+{
+  "app-id": "io.github.ouroboros.Client",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "51",
+  "sdk": "org.gnome.Sdk",
+  "sdk-extensions": [
+    "org.freedesktop.Sdk.Extension.node26",
+    "org.freedesktop.Sdk.Extension.typescript"
+  ],
+  "command": "ouroboros-client",
+  "appstream-compose": false,
+  "finish-args": [
+    "--share=network",
+    "--share=ipc",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--device=dri"
+  ],
+  "modules": [
+    {
+      "name": "ouroboros-ts-client",
+      "buildsystem": "simple",
+      "build-options": {
+        "append-path": "/usr/lib/sdk/node26/bin:/usr/lib/sdk/typescript/bin"
+      },
+      "build-commands": [
+        "node --version",
+        "tsc --version",
+        "tsc -p tsconfig.json",
+        "tsc -p tsconfig.gjs.json",
+        "install -D -m 644 dist-gjs/main-gjs.js /app/share/ouroboros-ts-client/main-gjs.js",
+        "install -D -m 644 dist/api.js /app/share/ouroboros-ts-client/api.js",
+        "install -D -m 644 dist/ws.js /app/share/ouroboros-ts-client/ws.js",
+        "install -D -m 644 dist/cli.js /app/share/ouroboros-ts-client/cli.js",
+        "install -D -m 755 run-gjs.sh /app/bin/ouroboros-client",
+        "install -D -m 644 data/io.github.ouroboros.Client.desktop /app/share/applications/io.github.ouroboros.Client.desktop",
+        "install -D -m 644 data/io.github.ouroboros.Client.metainfo.xml /app/share/metainfo/io.github.ouroboros.Client.metainfo.xml",
+        "install -D -m 644 data/io.github.ouroboros.Client.svg /app/share/icons/hicolor/scalable/apps/io.github.ouroboros.Client.svg",
+        "install -D -m 644 data/icons/512/io.github.ouroboros.Client.png /app/share/icons/hicolor/512x512/apps/io.github.ouroboros.Client.png",
+        "install -D -m 644 data/icons/256/io.github.ouroboros.Client.png /app/share/icons/hicolor/256x256/apps/io.github.ouroboros.Client.png",
+        "install -D -m 644 data/icons/128/io.github.ouroboros.Client.png /app/share/icons/hicolor/128x128/apps/io.github.ouroboros.Client.png",
+        "install -D -m 644 data/icons/64/io.github.ouroboros.Client.png /app/share/icons/hicolor/64x64/apps/io.github.ouroboros.Client.png",
+        "install -D -m 644 data/icons/48/io.github.ouroboros.Client.png /app/share/icons/hicolor/48x48/apps/io.github.ouroboros.Client.png",
+        "install -D -m 644 data/icons/32/io.github.ouroboros.Client.png /app/share/icons/hicolor/32x32/apps/io.github.ouroboros.Client.png"
+      ],
+      "sources": [
+        {
+          "type": "dir",
+          "path": "."
+        }
+      ]
+    }
+  ]
+}
