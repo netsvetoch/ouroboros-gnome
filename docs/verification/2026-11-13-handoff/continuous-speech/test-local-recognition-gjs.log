@@ -1,0 +1,2 @@
+Logs at /tmp/ouroboros-local-recognition.oWlhWk
+OK: actual PocketSphinx/WebRTC VAD passes original human goforward WAV to real English model -> go forward ten meters; DC and deterministic low/moderate noise stop before acoustic decoder; ancillary normalization, bounded PCM, explicit language/model/VAD availability, digital silence, cancellation in decode and close in VAD/child reaping, reuse/busy/peer isolation, malformed/nonzero VAD and decoder errors; no network, physical microphone, broad noise-quality or browser SpeechRecognition claim

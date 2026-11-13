@@ -1,0 +1,5 @@
+Logs at /tmp/ouroboros-host-module-recovery.2rz0NK
+OK: SIGKILL own GJS process after real reviewed HostModule mount and before its durable start marker settles
+OK: recover verifies HostModule recovery across independent GJS processes, no held asset execution, exact revision report and canonical owner history, native manual release/stale control and ordinary reopen; no models or physical audio
+OK: release verifies HostModule recovery across independent GJS processes, no held asset execution, exact revision report and canonical owner history, native manual release/stale control and ordinary reopen; no models or physical audio
+OK: verify verifies HostModule recovery across independent GJS processes, no held asset execution, exact revision report and canonical owner history, native manual release/stale control and ordinary reopen; no models or physical audio

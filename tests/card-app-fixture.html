@@ -1,0 +1,33 @@
+<div id="root">Native card fixture &lt;&amp;&gt;</div>
+<script>
+(() => {
+ const card=OuroborosCard;
+ const before=card.state.value;
+ let parentDOM=false,cookie=false,storage=false;
+ try{parentDOM=!!parent.document}catch{}
+ try{cookie=!!document.cookie}catch{}
+ try{localStorage.setItem('probe','value');storage=true}catch{}
+ const proof={mount:(before?.mount??0)+1,before:before?.text??null,text:'Состояние <&> 😀',origin:window.origin,parentDOM,cookie,storage};
+ card.state.save(proof);
+ const emit=(phase,extra={})=>card.submit({phase,...extra},phase);
+ emit('boot',proof);
+ card.onTheme(theme=>emit('theme',{theme,token:!!getComputedStyle(document.documentElement).getPropertyValue('--ouro-accent').trim(),attribute:document.documentElement.dataset.theme}));
+ window.addEventListener('message',async event=>{
+  if(event.source!==parent)return;
+  switch(event.data?.fixtureAction){
+   case 'limits': {
+    let exceeded=false;try{card.state.save('я'.repeat(17000))}catch(error){exceeded=error instanceof RangeError}
+    document.getElementById('root').style.minHeight='777px';card.resize(777);emit('limits',{exceeded,unchanged:card.state.value.text===proof.text});break;
+   }
+   case 'blocked': {
+    let rejected=false;try{await fetch('http://127.0.0.1:1/api/settings')}catch{rejected=true}
+    emit('blocked',{rejected});break;
+   }
+   case 'fault':Promise.reject(new Error('Card fixture rejection <&>'));break;
+   case 'large':card.submit('x'.repeat(400),'  Large\n   result <&>  ');break;
+   case 'submit':card.submit({answer:42},'  Exact\n result <&>  ');break;
+   case 'navigate':location.href='about:blank';break;
+  }
+ });
+})();
+</script>

@@ -1,4 +1,6 @@
 /** Минимальные node-объявления чтобы не тянуть @types/node в сборку. */
+interface ImportMeta { readonly url: string }
+
 declare const process: {
   env: Record<string, string | undefined>;
   argv: string[];
@@ -44,6 +46,7 @@ declare class TextEncoder {
 }
 
 declare class TextDecoder {
+  constructor(label?: string, options?: { fatal?: boolean });
   decode(input?: any): string;
 }
 

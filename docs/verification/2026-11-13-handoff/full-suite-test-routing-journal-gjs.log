@@ -1,0 +1,36 @@
+Logs at /tmp/ouroboros-routing-journal.OFwn0d
+OK: prepare process saved two exact pending routing requests for Main/project in durable mode-0600 journal before POST, then closed controllers without forgetting; no automatic retry or side effects
+A connection to the bus can't be made
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.gtk.vfs.Daemon' requested by ':1.0' (uid=1000 pid=4191277 comm="gjs -m tests/routing-journal-gjs.js file:///home/n")
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Successfully activated service 'org.gtk.vfs.Daemon'
+fusermount3: failed to access mountpoint /run/user/1000/gvfs: Permission denied
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.freedesktop.portal.Desktop' requested by ':1.0' (uid=1000 pid=4191277 comm="gjs -m tests/routing-journal-gjs.js file:///home/n")
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.freedesktop.impl.portal.PermissionStore' requested by ':1.2' (uid=1000 pid=4191302 comm="/usr/lib/xdg-desktop-portal")
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.PermissionStore'
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.freedesktop.portal.Documents' requested by ':1.2' (uid=1000 pid=4191302 comm="/usr/lib/xdg-desktop-portal")
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Successfully activated service 'org.freedesktop.portal.Documents'
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.gnome' requested by ':1.2' (uid=1000 pid=4191302 comm="/usr/lib/xdg-desktop-portal")
+
+** (xdg-desktop-portal-gnome:4191325): WARNING **: 23:13:12.376: Failed to open service channel Wayland connection, portal dialogs may misbehave (Cannot invoke method; proxy is for the well-known name org.gnome.Mutter.ServiceChannel without an owner, and proxy was constructed with the G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START flag).
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.gnome.Settings.GlobalShortcutsProvider' requested by ':1.5' (uid=1000 pid=4191325 comm="/usr/lib/xdg-desktop-portal-gnome")
+
+** (process:4191336): WARNING **: 23:13:12.440: Failed to open service channel Wayland connection, portal dialogs may misbehave (Cannot invoke method; proxy is for the well-known name org.gnome.Mutter.ServiceChannel without an owner, and proxy was constructed with the G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START flag).
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Successfully activated service 'org.gnome.Settings.GlobalShortcutsProvider'
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.gnome'
+
+(/usr/lib/xdg-desktop-portal:4191302): xdg-desktop-portal-WARNING **: 23:13:12.492: Failed to load RealtimeKit property: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name is not activatable
+
+(/usr/lib/xdg-desktop-portal:4191302): xdg-desktop-portal-WARNING **: 23:13:12.493: Failed to load RealtimeKit property: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name is not activatable
+
+(/usr/lib/xdg-desktop-portal:4191302): xdg-desktop-portal-WARNING **: 23:13:12.493: Failed to load RealtimeKit property: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name is not activatable
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.gtk' requested by ':1.2' (uid=1000 pid=4191302 comm="/usr/lib/xdg-desktop-portal")
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.gtk'
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Activating service name='org.freedesktop.secrets' requested by ':1.2' (uid=1000 pid=4191302 comm="/usr/lib/xdg-desktop-portal")
+discover_other_daemon: 1GNOME_KEYRING_CONTROL=/run/user/1000/keyring
+dbus-daemon[4191257]: [session uid=1000 pid=4191257 pidfd=5] Successfully activated service 'org.freedesktop.portal.Desktop'
+
+(gjs:4191277): Gtk-WARNING **: 23:13:12.558: Failed to open display
+/usr/bin/xvfb-run: line 185: kill: (4191270) - No such process
+
+(/usr/lib/xdg-desktop-portal:4191302): xdg-desktop-portal-WARNING **: 23:13:12.571: Failed to create secret proxy: Error calling StartServiceByName for org.freedesktop.secrets: The connection is closed
+A connection to the bus can't be made

@@ -1,0 +1,10 @@
+--- a/programs/CMakeLists.txt
++++ b/programs/CMakeLists.txt
+@@ -38,3 +38,7 @@
+ else()
+   install(TARGETS ${POCKETSPHINX_PROGRAMS} RUNTIME)
+ endif()
++
++add_executable(ouroboros-vad ouroboros-vad.c)
++target_link_libraries(ouroboros-vad pocketsphinx)
++install(TARGETS ouroboros-vad RUNTIME DESTINATION bin)

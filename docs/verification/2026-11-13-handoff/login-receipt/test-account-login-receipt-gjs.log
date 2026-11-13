@@ -1,0 +1,2 @@
+Logs at /tmp/ouroboros-account-login-receipt.4MIc7J
+OK: actual gateway/HTTPX login creates retain canonical known job ID after missing/state/phase/foreign/device/attach receipt faults; no bad snapshot/disclosure, no replay, close/reopen custody and stale controls, recovery buttons, explicit DELETE before valid read, separate GET receipt provenance and normal create; daemon/CLI simulated, no provider authentication

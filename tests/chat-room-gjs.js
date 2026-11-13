@@ -1,0 +1,50 @@
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw?version=1';
+import {exit} from 'system';
+const {Gateway}=await import(ARGV[0]+'gateway.js');
+const {ChatPage}=await import(ARGV[0]+'chat.js');
+const check=(value,message)=>{if(!value)throw new Error(message)};
+const wait=ms=>new Promise(resolve=>GLib.timeout_add(0,ms,()=>{resolve();return GLib.SOURCE_REMOVE}));
+async function until(fn,message){for(let i=0;i<900;i++){if(await fn())return;await wait(20)}throw new Error(message)}
+function all(widget,predicate){let result=predicate(widget)?[widget]:[];for(let child=widget.get_first_child?.();child;child=child.get_next_sibling())result.push(...all(child,predicate));return result}
+const app=new Adw.Application({application_id:GLib.getenv('FLATPAK_ID')??'io.github.ouroboros.Client.ChatRoomTests',flags:Gio.ApplicationFlags.NON_UNIQUE});let failed=false;
+app.connect('activate',()=>{
+ const win=new Adw.ApplicationWindow({application:app,default_width:1100,default_height:1000});win.present();const gateway=new Gateway(ARGV[1],'fixture-secret'),frames=[];let main,project,stage='initial Main history';
+ const facts=()=>gateway.json('GET','/fixture/facts'),emit=body=>gateway.json('POST','/fixture/emit',body);
+ const has=(view,text)=>view.current.some(row=>row.text===text);
+ const media=(view,text)=>view.liveMedia.frames.map(item=>item.row).filter(row=>row.caption===text);
+ (async()=>{
+  main=new ChatPage(win,gateway,{chatId:1,name:'Main'},frame=>frames.push(frame),()=>{});win.set_content(main.widget);
+  await until(()=>main.socket.online&&!main.reading&&!main.draft.recovering,'Main not ready');main.composer.text='Unsent Main draft Ω';
+  stage='external positive transport message triggers real Main history';const external=987654321012;
+  await emit({chat_id:external,text:'External transport message Ω'});await until(()=>has(main,'External transport message Ω'),'external message did not refresh Main');
+  let source=await facts();check(source.frames.at(-1).chat_id===external&&source.stored.find(row=>row.text==='External transport message Ω').chat_id===external&&main.room.chatId===1,'source room or visible Main selection was rewritten');
+  stage='separate typing sources';await emit({kind:'typing',chat_id:external,action:'typing'});await until(()=>main.typing,'external typing absent');
+  await emit({kind:'typing',chat_id:1});await emit({kind:'typing',chat_id:external,action:'stop',activity_id:''});await wait(80);check(main.typing,'unscoped external stop cleared Main activity');await emit({kind:'typing',chat_id:1,action:'stop'});await until(()=>!main.typing,'Main stop did not clear remaining source');
+  stage='one-shot typing is a bounded hint';await emit({kind:'typing',chat_id:external,action:'typing',activity_id:'one-shot'});await until(()=>main.typing,'one-shot typing hint absent');await until(()=>!main.typing&&!main.typingTimers.size,'one-shot typing became permanent live work');
+  stage='real registry stamp before client learns project';const room=await gateway.json('POST','/fixture/project',{id:'native-room'});check(room.chat_id!==external&&!main.projectRooms.has(room.chat_id),'project already known before race');
+  await emit({kind:'typing',chat_id:room.chat_id});await wait(100);check(!main.typing,'unknown stamped project created Main typing');
+  let state=await facts();check(state.frames.at(-1).project_thread===true,'real bridge did not stamp registry project');
+  await emit({chat_id:room.chat_id,text:'Private project message',also_rooms:[1]});await wait(150);check(!has(main,'Private project message'),'stamped project adopted through also_rooms');
+  stage='Project sees its own room and explicit Main projection';project=new ChatPage(win,gateway,{chatId:room.chat_id,projectId:room.id,name:room.name},()=>{},()=>{});
+  await until(()=>project.socket.online&&has(project,'Private project message'),'Project history not ready');project.composer.text='Independent Project draft 🐍';
+  await emit({chat_id:1,text:'Main notice also belongs to project',also_rooms:[room.chat_id],task_id:'room-bound',system_type:'main_notice'});await until(()=>has(main,'Main notice also belongs to project')&&has(project,'Main notice also belongs to project'),'also_rooms projection missing');
+  await emit({chat_id:external,text:'Main external only',ts:'2026-11-13T04:00:01Z'});await until(()=>has(main,'Main external only'),'second external message missing');await wait(100);check(!has(project,'Main external only'),'Project adopted external transport');
+  stage='known project protects legacy unstamped frames';const readAt=GLib.get_monotonic_time();main.observeProjectBindings(await gateway.json('GET','/api/state'),readAt);check(main.projectRooms.has(room.chat_id),'complete project_chat_ids not observed');
+  await emit({kind:'typing',chat_id:room.chat_id,legacy:true});await wait(100);check(!main.typing,'known legacy project created Main activity');
+  main.observeProjectBindings({project_chat_ids:[]},readAt-1);main.observeProjectBindings({project_chat_ids:['invalid']},readAt+1);
+  await emit({kind:'typing',chat_id:room.chat_id,legacy:true});await wait(100);check(main.projectRooms.has(room.chat_id)&&!main.typing,'stale/malformed roster erased isolation');
+  stage='no numeric range inference for other transport';const nearby=room.chat_id+1;await emit({chat_id:nearby,text:'External room beside a project',ts:'2026-11-13T04:00:02Z'});await until(()=>has(main,'External room beside a project'),'nearby positive room treated as project by range');
+  stage='media collision retains source identity';await emit({kind:'document',chat_id:external,text:'External file A'});await until(()=>media(main,'External file A').length===1,'external document absent');
+  await emit({kind:'document',chat_id:nearby,text:'External file B'});await until(()=>media(main,'External file B').length===1,'second external document absent');check(media(main,'External file A').length===1&&media(main,'External file A')[0].chat_id===external&&media(main,'External file B')[0].chat_id===nearby,'same-ts media merged across rooms');
+  await emit({kind:'document',chat_id:room.chat_id,text:'Project private file'});await until(()=>media(project,'Project private file').length===1,'Project document missing');check(!media(main,'Project private file').length,'Project document leaked to Main');
+  stage='hidden partition stays hidden';await emit({chat_id:0,text:'Hidden review row',ts:'2026-11-13T04:00:03Z'});await emit({kind:'typing',chat_id:0});await wait(120);check(!main.typing&&!has(main,'Hidden review row')&&!has(project,'Hidden review row'),'hidden chat zero adopted');
+  check(main.composer.text==='Unsent Main draft Ω'&&project.composer.text==='Independent Project draft 🐍','incoming routing changed independent drafts');
+  check(!all(main.widget,w=>String(w.constructor.name).includes('WebView')).length,'Main is a browser wrapper');
+  state=await facts();check(state.pending.length===0&&!state.audit.some(row=>row.method==='POST'),'viewer admitted model work or wrote settings');
+  await emit({kind:'typing',chat_id:external,action:'typing',activity_id:'closing'});await until(()=>main.typingTimers.size===1,'close-test timer missing');await main.close();check(!main.typingTimers.size&&!main.typingRooms.size,'closed page retained typing hint');
+  print('OK: production Main/Project ChatPage over real WS and primary bridge/history/registry: external positive text/media/typing, server project_thread stamp before discovery, known legacy project exclusion, explicit also_rooms projection, independent typing/media/draft identities, stale/malformed project roster and hidden zero isolation; no numeric-range heuristic, worker/model execution or viewer writes');
+ })().catch(error=>{failed=true;logError(error);print('Stage: '+stage)}).finally(()=>{project?.close();main?.close();gateway.close();win.close();app.quit()});
+});await app.runAsync([]);exit(failed?1:0);

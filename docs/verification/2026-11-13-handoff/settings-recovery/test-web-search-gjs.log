@@ -1,0 +1,2 @@
+Logs at /tmp/ouroboros-web-search.jXDBi2
+OK: native web-search through real Settings GET and route resolver; Auto/strict/named routes, recommended/legacy/explicit models, unsupported routes, credentials/package/legacy-endpoint gaps, exact one-shot draft staging, atomic last-known preview, cancellation across edits/parent closure and production Settings staging/reopen; optional SDK discovery controlled, no provider I/O or Settings writes by client

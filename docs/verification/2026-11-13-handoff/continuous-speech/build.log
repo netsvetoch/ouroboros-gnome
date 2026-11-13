@@ -1,0 +1,2 @@
+npm notice run ouroboros-ts-client@0.6.0 build
+npm notice run python3 scripts/build-native.py && tsc -p tsconfig.json && tsc -p tsconfig.gjs.json && cp vendor/mermaid-browser.js dist-gjs/gjs/vendor/mermaid-browser.js

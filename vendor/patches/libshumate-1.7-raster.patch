@@ -1,0 +1,85 @@
+--- a/shumate/shumate-raster-renderer.c
++++ b/shumate/shumate-raster-renderer.c
+@@ -282,19 +282,26 @@
+       g_autoptr(GInputStream) stream = NULL;
+       g_autoptr(GdkTexture) texture = NULL;
+ 
+-      stream = g_memory_input_stream_new_from_bytes (data);
+-      pixbuf = gdk_pixbuf_new_from_stream (stream, NULL, &error);
+-      if (error)
++      /* GDK handles standard raster tiles directly. Keep the pixbuf loader for
++       * other formats, without requiring its sandbox helper for PNG/JPEG. */
++      texture = gdk_texture_new_from_bytes (data, &error);
++      if (texture == NULL)
+         {
+-          g_warning ("Failed to create texture from tile data (%d, %d @ %d): %s",
+-                     shumate_tile_get_x (tile),
+-                     shumate_tile_get_y (tile),
+-                     shumate_tile_get_zoom_level (tile),
+-                     error->message);
+-          return;
++          g_clear_error (&error);
++          stream = g_memory_input_stream_new_from_bytes (data);
++          pixbuf = gdk_pixbuf_new_from_stream (stream, NULL, &error);
++          if (error)
++            {
++              g_warning ("Failed to create texture from tile data (%d, %d @ %d): %s",
++                         shumate_tile_get_x (tile),
++                         shumate_tile_get_y (tile),
++                         shumate_tile_get_zoom_level (tile),
++                         error->message);
++              return;
++            }
++          texture = gdk_texture_new_for_pixbuf (pixbuf);
+         }
+ 
+-      texture = gdk_texture_new_for_pixbuf (pixbuf);
+       shumate_tile_set_paintable (tile, GDK_PAINTABLE (texture));
+     }
+ }
+@@ -312,6 +319,9 @@
+ 
+   if ((error = shumate_data_source_request_get_error (req)))
+     g_task_return_error (task, g_error_copy (error));
++  else if (shumate_tile_get_paintable (tile) == NULL)
++    g_task_return_new_error (task, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
++                             "Failed to decode raster map tile");
+   else
+     g_task_return_boolean (task, TRUE);
+ }
+--- a/shumate/shumate-tile-downloader.c
++++ b/shumate/shumate-tile-downloader.c
+@@ -435,7 +435,7 @@
+   if (data->self->soup_session == NULL)
+     {
+       data->self->soup_session =
+-        soup_session_new_with_options ("user-agent", "libshumate/" SHUMATE_VERSION,
++        soup_session_new_with_options ("user-agent", shumate_get_user_agent (),
+                                        "max-conns-per-host", MAX_CONNS_DEFAULT,
+                                        "max-conns", MAX_CONNS_DEFAULT,
+                                        NULL);
+--- a/shumate/shumate-map-layer.c
++++ b/shumate/shumate-map-layer.c
+@@ -341,7 +341,13 @@
+   /* Only compare between frames, otherwise we might mistakenly think the
+      velocity is 0. */
+   if (frame_time == self->defer_frame_time)
+-    return self->deferring;
++    {
++      /* A deferred tick can run in the frame that queued it. Keep one tick
++       * pending until a later frame can compare the settled viewport. */
++      if (self->deferring && self->defer_callback_id == 0)
++        self->defer_callback_id = gtk_widget_add_tick_callback (GTK_WIDGET (self), defer_tick_callback, NULL, NULL);
++      return self->deferring;
++    }
+ 
+   if (velocity > diagonal * 0.25 || fabs (zoom_velocity) > 0.25)
+     {
+@@ -480,1 +486,3 @@
+-  if (all_done && self->profile_all_tiles_done_begin > 0)
++  /* Without sysprof the timing sentinel is -1. Completion signals must not
++   * depend on profiling being enabled. */
++  if (all_done && self->profile_all_tiles_done_begin != 0)
+@@ -488,1 +496,1 @@
+-  if (all_filled && self->profile_all_tiles_filled_begin > 0)
++  if (all_filled && self->profile_all_tiles_filled_begin != 0)

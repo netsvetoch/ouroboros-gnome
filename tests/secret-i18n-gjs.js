@@ -1,0 +1,57 @@
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw?version=1';
+import {exit} from 'system';
+const {Gateway}=await import(ARGV[0]+'gateway.js');
+const {SecretQuestion}=await import(ARGV[0]+'secrets.js');
+const {NativeI18n,useNativeI18n}=await import(ARGV[0]+'native-i18n.js');
+const check=(x,m)=>{if(!x)throw new Error(m)};
+const wait=ms=>new Promise(r=>GLib.timeout_add(0,ms,()=>{r();return GLib.SOURCE_REMOVE}));
+async function until(fn,m){for(let i=0;i<600;i++){if(await fn())return;await wait(20)}throw new Error(m)}
+function all(w,p){let a=p(w)?[w]:[];for(let c=w.get_first_child?.();c;c=c.get_next_sibling())a.push(...all(c,p));return a}
+const digest=s=>GLib.compute_checksum_for_string(GLib.ChecksumType.SHA256,s,-1);
+const app=new Adw.Application({application_id:GLib.getenv('FLATPAK_ID')??'io.github.ouroboros.Client.SecretI18nTests',flags:Gio.ApplicationFlags.NON_UNIQUE});let failed=false;
+app.connect('activate',()=>{
+ const win=new Adw.ApplicationWindow({application:app,default_width:1100,default_height:950});win.present();
+ const gateway=new Gateway(ARGV[1],'fixture-secret'),catalog=new NativeI18n(gateway);useNativeI18n(catalog);let socket,form,stage='initial dictionary';
+ const facts=()=>gateway.json('GET','/fixture/facts'),control=b=>gateway.json('POST','/fixture/control',b);
+ const language=language=>gateway.json('POST','/api/ui/i18n/language',{language});
+ const open=async(q)=>{form?.close();const task=q==='late'?'secret-late':'secret-asker',request=(await facts()).quizzes[task][q].secret_request;check(request,'primary secret request missing');form=new SecretQuestion(win,gateway,`quiz:${task}:${q}`,request,()=>{});win.set_content(form.widget);await until(()=>!form.busy&&form.latest,'secret status missing');return form};
+ (async()=>{
+  socket=await gateway.connect('/ws',new Gio.Cancellable());socket.connect('message',(_s,t,b)=>{if(t===1)catalog.frame(JSON.parse(new TextDecoder().decode(b.get_data())))});await until(()=>catalog.language!==undefined,'language missing');
+  await open('fill');check(form.save.label==='Save secret','English save caption missing');
+  const first=form.inputs.get('fillToken'),second=form.inputs.get('fillRegion');
+  const values=['i18n-secret-private-Ω-481','i18n-region-private-🧭-583'];first.text=values[0];check(!form.save.sensitive,'partial secret enabled save');
+  const pairs={'Save secret':'QAA Save secret','Replace existing values':'QAA Replace','Cancel request…':'QAA Cancel…','Check key status':'QAA Check','Secret for skill {skill}':'QAA Secret {skill}','{key} · empty':'QAA {key} empty','{key} · configured':'QAA {key} configured','Values are stored in gateway settings.':'QAA Settings storage','Secret saved.':'QAA Saved','Secret replaced.':'QAA Replaced','Replaced fields: {fields}.':'QAA Fields {fields}.','Cancel secret request?':'QAA Cancel secret?','The request will close. Configured values will remain in settings.':'QAA Keep configured values','Keep request':'QAA Keep','Cancel request':'QAA Cancel request','Secret request cancelled.':'QAA Cancelled','{skill} · reads {keys} · {enabled} · {access}':'QAA {skill} reads {keys} {enabled} {access}','No permissions':'QAA No permissions','Enabled':'QAA Enabled','Disabled':'QAA Disabled','NATIVE_SECRET_FILLTOKEN':'DO NOT TRANSLATE KEY','native-secret-fixture':'DO NOT TRANSLATE SKILL'};
+  pairs['Reading key status…']='QAA Reading keys';
+  delete pairs['No permissions'];
+  const pack=()=>({language:'qaa',entries:Object.fromEntries(Object.entries(pairs).map(([k,text])=>[k,{text}]))});
+  let count=(await facts()).audit.length;
+  await gateway.json('POST','/api/ui/i18n/import',pack());await language('qaa');await until(()=>form.save.label==='QAA Save secret'&&first.title.startsWith('QAA '),'secret locale missing');
+  check(first===form.inputs.get('fillToken')&&second===form.inputs.get('fillRegion')&&first.text===values[0]&&second.text===''&&!form.save.sensitive,'language rebuilt/revealed/cleared password draft');
+  check(form.status.label==='QAA Settings storage'&&first.title==='QAA NATIVE_SECRET_FILLTOKEN empty'&&form.consumers.label.includes('native-secret-fixture')&&form.consumers.label.startsWith('QAA '),'status/key/consumer localization wrong');
+  second.text=values[1];pairs['Save secret']='QAA Revised save';await gateway.json('POST','/api/ui/i18n/import',pack());await until(()=>form.save.label==='QAA Revised save','secret revision not applied');
+  check(form.save.sensitive&&first.text===values[0]&&second.text===values[1]&&(await facts()).audit.length===count,'locale caused secret HTTP/write or changed draft');
+  await until(async()=>(await facts()).i18n_audit.length>0,'missing source report not sent');
+  stage='exact save after language/revision';form.save.emit('clicked');check(first.text===''&&second.text===''&&form.inputs.size===0,'submitted password rows retained values');await until(()=>!form.busy&&form.latest?.state==='answered','save not settled');
+  let data=await facts();check(data.digests[data.fields.fillToken]===digest(values[0])&&data.digests[data.fields.fillRegion]===digest(values[1])&&form.status.label==='QAA Saved','save changed values/outcome');check(!data.leaks.length,'secret leaked outside Settings');
+  stage='configured title and replacement keep technical key';await control({action:'set',field:'conflictToken',value:'i18n-old-private-942'});await open('conflict');
+  check(form.save.label==='QAA Replace'&&form.inputs.get('conflictToken').title==='QAA NATIVE_SECRET_CONFLICTTOKEN configured','configured/replace labels missing');form.inputs.get('conflictToken').text='i18n-replacement-private-731';form.save.emit('clicked');await until(()=>!form.busy&&form.latest?.state==='answered','replacement pending');check(form.status.label.includes('QAA Replaced')&&form.status.label.includes('conflictToken'),'replacement field IDs translated or omitted');
+  stage='owned cancel confirmation locale and actual response';await control({action:'set',field:'cancelToken',value:'i18n-configured-private-189'});await open('cancel');const old=form.inputs.get('cancelToken');old.text='unsent-cancel-private-372';form.cancel.emit('clicked');const dialog=form.confirmation;
+  check(dialog.heading==='QAA Cancel secret?'&&dialog.get_default_response()==='cancel'&&dialog.get_response_label('cancel')==='QAA Keep','cancel confirmation labels/default wrong');
+  await language('en');await until(()=>dialog.heading==='Cancel secret request?'&&dialog.get_response_label('ok')==='Cancel request','confirmation locale not repainted');check(old.text==='unsent-cancel-private-372','confirmation locale cleared value');
+  await until(()=>dialog.get_mapped(),'confirmation unmapped');const cancel=all(dialog,w=>w instanceof Gtk.Button&&(w.label==='Cancel request'||all(w,l=>l instanceof Gtk.Label&&l.label==='Cancel request').length))[0];check(cancel,'real cancel button missing');cancel.emit('clicked');await until(()=>!form.busy&&form.latest?.state==='closed','cancel not persisted');
+  data=await facts();check(data.digests[data.fields.cancelToken]===digest('i18n-configured-private-189')&&old.text===''&&form.inputs.size===0,'cancel changed saved key or retained input');
+  const oldForm=form;oldForm.close();const before=data.audit.length;oldForm.save.emit('clicked');oldForm.cancel.emit('clicked');oldForm.reload.emit('clicked');dialog.emit('response','ok');await language('qaa');await wait(1200);
+  data=await facts();check(data.audit.length===before,'closed form sent late secret request');const wire=JSON.stringify(data.i18n_audit);check(data.i18n_audit.length,'missing audit empty');check(!['i18n-secret-private','NATIVE_SECRET_FILLTOKEN','native-secret-fixture','unsent-cancel-private'].some(x=>wire.includes(x)),'secret/skill/key used as missing source');check(!data.leaks.length,'secret leaked outside Settings');
+  stage='locale under accepted pending status and failed read';await open('before');const heldInput=form.inputs.get('beforeToken');heldInput.text='held-draft-private-725';
+  await control({action:'hold',id:'quiz:secret-asker:before'});form.reload.emit('clicked');await until(async()=>(await facts()).held,'status request not held');
+  await language('en');await until(()=>form.status.label==='Reading key status…','pending read caption not English');
+  check(form.busy&&!form.save.sensitive&&!form.reload.sensitive&&form.inputs.get('beforeToken')===heldInput&&heldInput.text==='held-draft-private-725','locale altered pending state or password');
+  await language('qaa');await until(()=>form.status.label==='QAA Reading keys','pending read caption not translated');await control({action:'release'});await until(()=>!form.busy,'failed status pending');
+  check(!form.latest&&form.inputs.size===0&&heldInput.text==='','failed read did not clear unverified fields');const error=form.status.label;await language('en');await until(()=>catalog.language==='en','English not applied');check(form.status.label===error,'locale erased failed-read error');
+  form.reload.emit('clicked');await until(()=>!form.busy&&form.inputs.size===1,'status recovery failed');
+  print('OK: native secret live language/revision preserves masked row identity and partial/complete drafts without secret requests; exact primary multi-key save/replacement/digests, cleared submitted fields, consumer/key templates, actual localized cancellation/default cancel and closed callback isolation; no secrets in i18n missing or non-Settings files');
+ })().catch(e=>{failed=true;logError(e);print('Stage: '+stage)}).finally(()=>{form?.close();catalog.close();socket?.close(1000,null);gateway.close();win.close();app.quit()});
+});await app.runAsync([]);exit(failed?1:0);

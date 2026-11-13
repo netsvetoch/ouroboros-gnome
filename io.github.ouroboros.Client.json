@@ -14,9 +14,203 @@
     "--share=ipc",
     "--socket=fallback-x11",
     "--socket=wayland",
+    "--socket=pulseaudio",
     "--device=dri"
   ],
   "modules": [
+    {
+      "name": "poppler-data",
+      "buildsystem": "cmake-ninja",
+      "post-install": [
+        "install -Dm644 COPYING.adobe /app/share/licenses/poppler-data/COPYING.adobe",
+        "install -Dm644 COPYING.gpl2 /app/share/licenses/poppler-data/COPYING.gpl2"
+      ],
+      "cleanup": [
+        "/share/pkgconfig"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://poppler.freedesktop.org/poppler-data-0.4.12.tar.gz",
+          "sha256": "c835b640a40ce357e1b83666aabd95edffa24ddddd49b8daff63adb851cdab74"
+        }
+      ]
+    },
+    {
+      "name": "poppler",
+      "buildsystem": "cmake-ninja",
+      "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_MANUAL_TESTS=OFF",
+        "-DENABLE_BOOST=OFF",
+        "-DENABLE_CPP=OFF",
+        "-DENABLE_GLIB=ON",
+        "-DENABLE_GOBJECT_INTROSPECTION=ON",
+        "-DENABLE_GTK_DOC=OFF",
+        "-DENABLE_QT5=OFF",
+        "-DENABLE_QT6=OFF",
+        "-DENABLE_LIBCURL=OFF",
+        "-DENABLE_LIBTIFF=OFF",
+        "-DENABLE_NSS3=OFF",
+        "-DENABLE_GPGME=OFF"
+      ],
+      "post-install": [
+        "install -Dm644 COPYING /app/share/licenses/poppler/COPYING"
+      ],
+      "cleanup": [
+        "/include",
+        "/lib/pkgconfig",
+        "/share/man",
+        "/bin/pdfattach",
+        "/bin/pdfdetach",
+        "/bin/pdffonts",
+        "/bin/pdfimages",
+        "/bin/pdfseparate",
+        "/bin/pdfsig",
+        "/bin/pdfunite",
+        "/bin/pdftocairo",
+        "/bin/pdftohtml",
+        "/bin/pdftops",
+        "/bin/pdftotext"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://poppler.freedesktop.org/poppler-26.11.0.tar.xz",
+          "sha256": "41c32680160addf5a8dd7a830e4869c01e9f6bee1abb91e44fabd1ba9d7828fb"
+        }
+      ]
+    },
+    {
+      "name": "espeak-ng",
+      "buildsystem": "autotools",
+      "config-opts": [
+        "--without-mbrola",
+        "--without-sonic",
+        "--without-pcaudiolib"
+      ],
+      "post-install": [
+        "install -D -m 644 COPYING /app/share/licenses/espeak-ng/COPYING",
+        "install -m 644 COPYING.APACHE COPYING.BSD2 COPYING.UCD /app/share/licenses/espeak-ng/"
+      ],
+      "cleanup": [
+        "/include",
+        "/lib/pkgconfig",
+        "/share/man",
+        "/share/vim",
+        "*.a"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://codeload.github.com/espeak-ng/espeak-ng/tar.gz/refs/tags/1.52.0",
+          "dest-filename": "espeak-ng-1.52.0.tar.gz",
+          "sha256": "bb4338102ff3b49a81423da8a1a158b420124b055b60fa76cfb4b18677130a23"
+        }
+      ]
+    },
+    {
+      "name": "pocketsphinx",
+      "buildsystem": "cmake-ninja",
+      "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_TESTING=OFF",
+        "-DBUILD_SHARED_LIBS=OFF"
+      ],
+      "post-install": [
+        "install -Dm644 LICENSE /app/share/licenses/pocketsphinx/LICENSE",
+        "install -Dm644 model/en-us/en-us/README /app/share/licenses/pocketsphinx/acoustic-model.README"
+      ],
+      "cleanup": [
+        "/include",
+        "/lib/pkgconfig",
+        "/lib/*.a",
+        "/share/man",
+        "/bin/pocketsphinx_batch",
+        "/bin/pocketsphinx_mdef_convert",
+        "/bin/pocketsphinx_jsgf2fsg",
+        "/bin/pocketsphinx_lm_convert",
+        "/bin/pocketsphinx_lm_eval",
+        "/bin/pocketsphinx_pitch",
+        "/share/pocketsphinx/model/en-us/en-us-phone.lm.bin"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://codeload.github.com/cmusphinx/pocketsphinx/tar.gz/refs/tags/v5.1.1",
+          "dest-filename": "pocketsphinx-5.1.1.tar.gz",
+          "sha256": "e2db414eb66618cd0a98de77507db32517a48f6900b06bfb94c0acc4bef5761d"
+        },
+        {
+          "type": "patch",
+          "path": "vendor/patches/pocketsphinx-5.1.1-stdin.patch"
+        },
+        {
+          "type": "file",
+          "path": "src/native/recognition-vad.c",
+          "dest": "programs",
+          "dest-filename": "ouroboros-vad.c"
+        },
+        {
+          "type": "patch",
+          "path": "vendor/patches/pocketsphinx-5.1.1-vad-program.patch"
+        }
+      ]
+    },
+    {
+      "name": "protobuf-c",
+      "buildsystem": "autotools",
+      "config-opts": [
+        "--disable-protoc",
+        "--disable-static"
+      ],
+      "post-install": [
+        "install -Dm644 LICENSE /app/share/licenses/protobuf-c/LICENSE"
+      ],
+      "cleanup": [
+        "/include",
+        "/lib/*.a",
+        "/lib/*.la",
+        "/lib/pkgconfig"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/protobuf-c/protobuf-c/releases/download/v1.5.2/protobuf-c-1.5.2.tar.gz",
+          "sha256": "e2c86271873a79c92b58fef7ebf8de1aa0df4738347a8bd5d4e65a80a16d0d24"
+        }
+      ]
+    },
+    {
+      "name": "libshumate",
+      "buildsystem": "meson",
+      "config-opts": [
+        "-Dgtk_doc=false",
+        "-Ddemos=false",
+        "-Dvapi=false",
+        "-Dsysprof=disabled"
+      ],
+      "post-install": [
+        "install -Dm644 ../COPYING /app/share/licenses/libshumate/COPYING"
+      ],
+      "cleanup": [
+        "/include",
+        "/lib/pkgconfig",
+        "/share/gir-1.0",
+        "/share/vala"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://download.gnome.org/sources/libshumate/1.7/libshumate-1.7.0.tar.xz",
+          "sha256": "3896cc4b6a7bf83141c27df23ce48cdd68467603bc6b764960307cdcbbef80e5"
+        },
+        {
+          "type": "patch",
+          "path": "vendor/patches/libshumate-1.7-raster.patch"
+        }
+      ]
+    },
     {
       "name": "ouroboros-ts-client",
       "buildsystem": "simple",
@@ -26,9 +220,26 @@
       "build-commands": [
         "node --version",
         "tsc --version",
+        "python3 scripts/build-native.py",
         "tsc -p tsconfig.json",
         "tsc -p tsconfig.gjs.json",
         "install -D -m 644 dist-gjs/main-gjs.js /app/share/ouroboros-ts-client/main-gjs.js",
+        "install -d /app/share/ouroboros-ts-client/gjs",
+        "install -m 644 dist-gjs/gjs/*.js /app/share/ouroboros-ts-client/gjs/",
+        "install -d /app/share/ouroboros-ts-client/gjs/vendor",
+        "install -m 644 dist-gjs/gjs/vendor/*.js /app/share/ouroboros-ts-client/gjs/vendor/",
+        "install -D -m 644 vendor/mermaid-browser.js /app/share/ouroboros-ts-client/gjs/vendor/mermaid-browser.js",
+        "install -D -m 644 vendor/mermaid.LICENSE /app/share/licenses/io.github.ouroboros.Client/mermaid.LICENSE",
+        "install -D -m 644 vendor/core-js-pure.LICENSE /app/share/licenses/io.github.ouroboros.Client/core-js-pure.LICENSE",
+        "install -D -m 644 vendor/marked.LICENSE /app/share/licenses/io.github.ouroboros.Client/marked.LICENSE",
+        "install -D -m 644 vendor/parse5.LICENSE /app/share/licenses/io.github.ouroboros.Client/parse5.LICENSE",
+        "install -D -m 644 vendor/entities.LICENSE /app/share/licenses/io.github.ouroboros.Client/entities.LICENSE",
+        "install -D -m 644 vendor/ouroboros.LICENSE /app/share/licenses/io.github.ouroboros.Client/ouroboros.LICENSE",
+        "install -D -m 644 vendor/highlight.js.LICENSE /app/share/licenses/io.github.ouroboros.Client/highlight.js.LICENSE",
+        "install -D -m 644 vendor/chart.js.LICENSE /app/share/licenses/io.github.ouroboros.Client/chart.js.LICENSE",
+        "install -D -m 644 vendor/kurkle-color.LICENSE /app/share/licenses/io.github.ouroboros.Client/kurkle-color.LICENSE",
+        "install -D -m 644 vendor/mathjax-full.LICENSE /app/share/licenses/io.github.ouroboros.Client/mathjax-full.LICENSE",
+        "install -D -m 644 vendor/katex.LICENSE /app/share/licenses/io.github.ouroboros.Client/katex.LICENSE",
         "install -D -m 644 dist/api.js /app/share/ouroboros-ts-client/api.js",
         "install -D -m 644 dist/ws.js /app/share/ouroboros-ts-client/ws.js",
         "install -D -m 644 dist/cli.js /app/share/ouroboros-ts-client/cli.js",
@@ -41,7 +252,9 @@
         "install -D -m 644 data/icons/128/io.github.ouroboros.Client.png /app/share/icons/hicolor/128x128/apps/io.github.ouroboros.Client.png",
         "install -D -m 644 data/icons/64/io.github.ouroboros.Client.png /app/share/icons/hicolor/64x64/apps/io.github.ouroboros.Client.png",
         "install -D -m 644 data/icons/48/io.github.ouroboros.Client.png /app/share/icons/hicolor/48x48/apps/io.github.ouroboros.Client.png",
-        "install -D -m 644 data/icons/32/io.github.ouroboros.Client.png /app/share/icons/hicolor/32x32/apps/io.github.ouroboros.Client.png"
+        "install -D -m 644 data/icons/32/io.github.ouroboros.Client.png /app/share/icons/hicolor/32x32/apps/io.github.ouroboros.Client.png",
+        "install -d /app/share/ouroboros-ts-client/native",
+        "install -m 644 dist-gjs/native/libouroboros-stream.so dist-gjs/native/OuroborosStream-1.0.typelib /app/share/ouroboros-ts-client/native/"
       ],
       "sources": [
         {

@@ -1,0 +1,3 @@
+MCP SDK 1.29.0
+Logs at /tmp/ouroboros-mcp-import.8frXb4
+OK: real MCP import preview through native GTK; opt-in draft updates, complete header replacement/clearing, omitted fields retained, disabled additions, literal substitutions, stdio flags, ID/transport/JSON conflicts, atomic malformed preview rejection, single cancellable credential confirmation, single outer stage, no-store/name-only matching, stale responses/text edits and parent-close cleanup; no Settings writes or transport I/O

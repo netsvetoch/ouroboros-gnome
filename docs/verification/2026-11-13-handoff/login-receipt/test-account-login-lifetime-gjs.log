@@ -1,0 +1,2 @@
+Logs at /tmp/ouroboros-account-login-lifetime.WfdgAQ
+OK: native login envelope identity/nested validation retaining prior result, accepted GET superseded by input, accepted create/input/cancel/reconcile cancellation before release, reopened view/operation epoch isolation, owned confirmation settles before late approval, code/disclosure cleanup and stopped polling; real gateway/HTTPX proxy, daemon custody/auth simulated, no vendor CLI/provider login

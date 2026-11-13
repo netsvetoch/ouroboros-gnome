@@ -1,0 +1,24 @@
+--- a/src/util/soundfiles.c
++++ b/src/util/soundfiles.c
+@@ -79,7 +79,20 @@
+         file = "(input filehandle)";
+     fseek(infh, 0, SEEK_SET);
+     TRY_FREAD(header, 1, 4, infh);
+-    fseek(infh, 0, SEEK_SET);
++    if (fseek(infh, 0, SEEK_SET) != 0) {
++        /* Pipes cannot seek. Restore the probe bytes before parsing WAV
++         * (or decoding raw PCM), rather than silently dropping them.
++         * Fail explicitly if this stdio implementation cannot push back
++         * the complete probe. glibc supports this for pipe streams. */
++        int i;
++        clearerr(infh);
++        for (i = 3; i >= 0; --i) {
++            if (ungetc((unsigned char)header[i], infh) == EOF) {
++                rv = -1;
++                goto error_out;
++            }
++        }
++    }
+ 
+     if (0 == memcmp(header, "RIFF", 4)) {
+         E_INFO("%s appears to be a WAV file\n", file);

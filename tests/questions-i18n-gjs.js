@@ -1,0 +1,55 @@
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw?version=1';
+import {exit} from 'system';
+const {Gateway}=await import(ARGV[0]+'gateway.js');
+const {Questions}=await import(ARGV[0]+'questions.js');
+const {NativeI18n,useNativeI18n}=await import(ARGV[0]+'native-i18n.js');
+const check=(x,m)=>{if(!x)throw new Error(m)};
+const wait=ms=>new Promise(r=>GLib.timeout_add(0,ms,()=>{r();return GLib.SOURCE_REMOVE}));
+async function until(fn,m){for(let i=0;i<600;i++){if(await fn())return;await wait(20)}throw new Error(m)}
+function all(w,p){let a=p(w)?[w]:[];for(let c=w.get_first_child?.();c;c=c.get_next_sibling())a.push(...all(c,p));return a}
+const app=new Adw.Application({application_id:GLib.getenv('FLATPAK_ID')??'io.github.ouroboros.Client.QuestionI18nTests',flags:Gio.ApplicationFlags.NON_UNIQUE});let failed=false;
+app.connect('activate',()=>{
+ const win=new Adw.ApplicationWindow({application:app,default_width:1100,default_height:950});win.present();
+ const gateway=new Gateway(ARGV[1],'fixture-secret'),catalog=new NativeI18n(gateway);useNativeI18n(catalog);
+ const forms=new Questions(win,gateway,()=>{});let socket,stage='initial dictionary';
+ const facts=()=>gateway.json('GET','/fixture/facts');
+ const entry=(task,id)=>forms.entries.get(`quiz:${task}:${id}`);
+ const show=async(task,id)=>{const q=(await facts()).quizzes[task][id];forms.show(task,{...q,question_delivery:q.delivery??q.question_delivery});return entry(task,id).dialog};
+ const language=language=>gateway.json('POST','/api/ui/i18n/language',{language});
+ (async()=>{
+  socket=await gateway.connect('/ws',new Gio.Cancellable());socket.connect('message',(_s,t,b)=>{if(t===1)catalog.frame(JSON.parse(new TextDecoder().decode(b.get_data())))});await until(()=>catalog.language!==undefined,'language missing');
+  let form=await show('main-asker','verbatim');check(form.dialog.title==='Ouroboros question'&&form.answer.label==='Send answer','English chrome missing');
+  const options=all(form.choices,w=>w instanceof Gtk.CheckButton),second=options[2];second.active=true;
+  const words='  private answer 🧭 <&>\nsecond line  ';form.comment.buffer.set_text(words,-1);const original=form.question.label;
+  const pairs={'Ouroboros question':'QAA Question','Send answer':'QAA Send','Close question…':'QAA Close…','Close question':'QAA Close','Close question without answering':'QAA Close reason','Reason (optional)':'QAA Reason','Unanswered':'QAA Waiting','Answer recorded':'QAA Recorded','{option} · recommended':'{option} · QAA recommended','{n} / 2000 characters':'QAA {n} / 2000','Your own answer':'QAA Own','Hide question?':'QAA Hide?','Cancel':'QAA Cancel','Hide':'QAA Hide','The recorded answer and delivery state will remain in history.':'QAA Delivery history','Второй':'DO NOT TRANSLATE OPTION',[original]:'DO NOT TRANSLATE QUESTION',[words]:'DO NOT TRANSLATE ANSWER'};
+  const pack=()=>({language:'qaa',entries:Object.fromEntries(Object.entries(pairs).map(([k,text])=>[k,{text}]))});
+  await gateway.json('POST','/api/ui/i18n/import',pack());await language('qaa');
+  await until(()=>form.dialog.title==='QAA Question'&&form.state.label.startsWith('QAA Waiting'),'question locale not updated');
+  check(form.answer.label==='QAA Send'&&form.commentSize.label.startsWith('QAA ')&&second.label==='Второй · QAA recommended','buttons/counter/recommended caption untranslated');
+  check(form.question.label===original&&form.comment.buffer.text===words&&form.selected===1&&second.active&&all(form.choices,w=>w instanceof Gtk.CheckButton)[2]===second,'locale rebuilt choices or changed private data');
+  stage='exact native decision after translation';form.answer.emit('clicked');await until(()=>!entry('main-asker','verbatim').sending,'answer pending');
+  let audit=(await facts()).audit.filter(x=>x.body.decision_id==='quiz:main-asker:verbatim');check(audit.length===1&&audit[0].body.option_index===1&&audit[0].body.comment===words,'locale changed decision ID/index/comment');form.close();
+  stage='close reason draft and counter survive revision';form=await show('main-asker','close');form.closeQuestion.emit('clicked');let closing=form.closing;
+  const reason=all(closing,w=>w instanceof Gtk.TextView)[0];const why='private reason <&> 🧭';reason.buffer.set_text(why,-1);
+  pairs['Close question without answering']='QAA Revised close';await gateway.json('POST','/api/ui/i18n/import',pack());await until(()=>closing.title==='QAA Revised close','open reason title not revised');
+  check(reason.buffer.text===why&&all(closing,w=>w instanceof Gtk.Label&&w.label.startsWith('QAA ')).length,'reason draft/counter changed');
+  all(closing,w=>w instanceof Gtk.Button&&w.label==='QAA Close')[0].emit('clicked');await until(()=>!entry('main-asker','close').sending,'close pending');
+  audit=(await facts()).audit.filter(x=>x.body.decision_id==='quiz:main-asker:close');check(audit.length===1&&audit[0].body.action==='close'&&audit[0].body.reason===why,'close payload translated');form.close();
+  stage='dismiss confirmation changes locale without changing response IDs';form=await show('late-asker','unknown');form.dismiss.emit('clicked');const dialog=form.confirmation;
+  check(dialog.heading==='QAA Hide?'&&dialog.get_default_response()==='cancel'&&dialog.get_response_label('ok')==='QAA Hide','dismiss confirmation untranslated or unsafe default');
+  await language('en');await until(()=>dialog.heading==='Hide question?'&&dialog.get_response_label('cancel')==='Cancel','open confirmation did not change language');dialog.emit('response','cancel');check(!form.confirmation,'cancel confirmation not released');
+  form.dismiss.emit('clicked');const old=form.confirmation;form.close();old.emit('response','ok');await wait(50);check(!(await facts()).audit.some(x=>x.body.decision_id==='quiz:late-asker:unknown'),'late confirmation dismissed closed question');
+  stage='actual confirmation button preserves response ordering';await language('qaa');await until(()=>catalog.language==='qaa','qaa not selected');form=await show('late-asker','unknown');form.dismiss.emit('clicked');
+  const current=form.confirmation;await until(()=>current.get_mapped(),'confirmation not mapped');
+  const hide=all(current,w=>w instanceof Gtk.Button&&(w.label==='QAA Hide'||all(w,l=>l instanceof Gtk.Label&&l.label==='QAA Hide').length))[0];check(hide,'actual Hide button missing');hide.emit('clicked');
+  await until(async()=>Boolean((await facts()).quizzes['late-asker'].unknown.delivery.dismissed_at),'actual Hide click did not write dismissal');
+  check((await facts()).quizzes['late-asker'].unknown.delivery.state==='owed','dismissal fabricated delivery');form.close();
+  stage='unknown state falls back safely';form=await show('main-asker','scope');forms.update('main-asker','scope',{state:'__proto__'});check(form.state.label.startsWith('Question state unknown'),'unknown state used inherited caption');form.close();
+  stage='missing reports contain only authored sources';await wait(1200);const wire=JSON.stringify((await facts()).i18n_audit);
+  check((await facts()).i18n_audit.length&&!['private answer','private reason','Второй','Вопрос verbatim','Факты шлюза'].some(x=>wire.includes(x)),'private question data reported as translation source');
+  print('OK: native question live i18n preserves selected option/widget identity and Unicode answer/reason drafts; actual primary decision/close payloads unchanged, revision/confirmation/default cancel/late response and missing-source isolation verified through real i18n API/WS');
+ })().catch(e=>{failed=true;logError(e);print('Stage: '+stage)}).finally(()=>{forms.close();catalog.close();socket?.close(1000,null);gateway.close();win.close();app.quit()});
+});await app.runAsync([]);exit(failed?1:0);

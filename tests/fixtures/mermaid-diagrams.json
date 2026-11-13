@@ -1,0 +1,179 @@
+[
+  {
+    "name": "flow",
+    "source": "flowchart LR\nA[Hello] --> B[GTK]"
+  },
+  {
+    "name": "sequence",
+    "source": "sequenceDiagram\nAlice->>Bob: Hello\nBob-->>Alice: GTK"
+  },
+  {
+    "name": "class",
+    "source": "classDiagram\nclass Animal\nclass Dog\nAnimal <|-- Dog"
+  },
+  {
+    "name": "state",
+    "source": "stateDiagram-v2\n[*] --> Start\nStart --> End\nEnd --> [*]"
+  },
+  {
+    "name": "er",
+    "source": "erDiagram\nCUSTOMER ||--o{ ORDER : places"
+  },
+  {
+    "name": "pie",
+    "source": "pie title Demo\n\"A\" : 3\n\"B\" : 4"
+  },
+  {
+    "name": "gantt",
+    "source": "gantt\ntitle Demo\ndateFormat YYYY-MM-DD\nsection Tasks\nFirst :a, 2026-01-01, 3d\nSecond :after a, 2d"
+  },
+  {
+    "name": "journey",
+    "source": "journey\ntitle Demo\nsection Day\nStart: 5: Alice\nFinish: 3: Bob"
+  },
+  {
+    "name": "git",
+    "source": "gitGraph\ncommit\nbranch develop\ncheckout develop\ncommit\ncheckout main\nmerge develop"
+  },
+  {
+    "name": "mindmap",
+    "source": "mindmap\n  root((Demo))\n    One\n    Two"
+  },
+  {
+    "name": "timeline",
+    "source": "timeline\ntitle Demo\n2025 : First\n2026 : Next"
+  },
+  {
+    "name": "quadrant",
+    "source": "quadrantChart\ntitle Demo\nx-axis Low --> High\ny-axis Low --> High\nquadrant-1 First\nItem: [0.3, 0.6]"
+  },
+  {
+    "name": "xy",
+    "source": "xychart-beta\nx-axis [A,B,C]\ny-axis \"Count\" 0 --> 10\nbar [1,3,2]"
+  },
+  {
+    "name": "block",
+    "source": "block-beta\ncolumns 2\nA B\nA-->B"
+  },
+  {
+    "name": "packet",
+    "source": "packet-beta\n0-7: \"Header\"\n8-15: \"Data\""
+  },
+  {
+    "name": "kanban",
+    "source": "kanban\nTodo\n  id1[First]\nDone\n  id2[Second]"
+  },
+  {
+    "name": "architecture",
+    "source": "architecture-beta\nservice db(database)[Database]\nservice api(server)[API]\napi:R -- L:db"
+  },
+  {
+    "name": "sankey",
+    "source": "sankey-beta\nA,B,5\nB,C,3"
+  },
+  {
+    "name": "requirement",
+    "source": "requirementDiagram\nrequirement test_req {\nid: 1\ntext: Example\nrisk: low\nverifymethod: test\n}"
+  },
+  {
+    "name": "c4",
+    "source": "C4Context\ntitle System\nPerson(user,\"User\")\nSystem(sys,\"App\")\nRel(user,sys,\"Uses\")"
+  },
+  {
+    "name": "swimlane",
+    "source": "swimlane-beta LR\nsubgraph Client\nA[Start]\nend\nsubgraph Server\nB[Accept]\nend\nA-->B"
+  },
+  {
+    "name": "treeView",
+    "source": "treeView-beta\n  \"client\"\n    \"src\""
+  },
+  {
+    "name": "eventmodeling",
+    "source": "eventmodeling\ntf 01 ui Input\ntf 02 cmd Send\ntf 03 evt Sent"
+  },
+  {
+    "name": "radar",
+    "source": "radar-beta\naxis A,B,C\ncurve first{1,2,3}"
+  },
+  {
+    "name": "ishikawa",
+    "source": "ishikawa-beta\n  Delay\n  Process\n    Queue\n  Machine\n    Disk"
+  },
+  {
+    "name": "treemap",
+    "source": "treemap-beta\n\"Root\"\n  \"A\": 3\n  \"B\": 5"
+  },
+  {
+    "name": "railroad",
+    "source": "railroad-beta\nroot = sequence(terminal(\"a\"), terminal(\"b\")) ;"
+  },
+  {
+    "name": "railroad-ebnf",
+    "source": "railroad-ebnf-beta\nitem = \"a\" | \"b\" ;"
+  },
+  {
+    "name": "railroad-abnf",
+    "source": "railroad-abnf-beta\nitem = \"a\" / \"b\" ;"
+  },
+  {
+    "name": "railroad-peg",
+    "source": "railroad-peg-beta\nitem <- 'a' / 'b' ;"
+  },
+  {
+    "name": "venn",
+    "source": "venn-beta\nset A\nset B\nunion A,B[\"Both\"]"
+  },
+  {
+    "name": "wardley",
+    "source": "wardley-beta\nanchor User [0.9,0.7]\ncomponent API [0.5,0.6]\nUser -> API"
+  },
+  {
+    "name": "cynefin",
+    "source": "cynefin-beta\ncomplex\n\"Explore\"\nclear\n\"Operate\""
+  },
+  {
+    "name": "info",
+    "source": "info"
+  },
+  {
+    "name": "class-v2",
+    "source": "classDiagram-v2\nclass Animal\nclass Dog\nAnimal <|-- Dog"
+  },
+  {
+    "name": "state-legacy",
+    "source": "%%{init: {\"state\":{\"defaultRenderer\":\"dagre-d3\"}}}%%\nstateDiagram\n[*] --> Start\nStart --> End\nEnd --> [*]",
+    "expectedError": "getRootDoc"
+  },
+  {
+    "name": "flow-legacy",
+    "source": "%%{init: {\"flowchart\":{\"defaultRenderer\":\"dagre-d3\"}}}%%\ngraph TD\nA-->B"
+  },
+  {
+    "name": "rich-labels",
+    "source": "flowchart LR\nA[\"`Клиент GNOME **GTK**`\"] --> B[\"`alpha é 👩‍💻`\"]"
+  },
+  {
+    "name": "frontmatter",
+    "source": "---\ntitle: Header\nconfig:\n  theme: default\n---\nflowchart TD\nA-->B"
+  },
+  {
+    "name": "inline-image",
+    "source": "flowchart LR\nA@{ img: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNomLDgPwAF9AKw7aBF7QAAAABJRU5ErkJggg==\", label: \"Embedded\", h: 50, constraint: \"on\" }"
+  },
+  {
+    "name": "html-inline-image",
+    "source": "flowchart LR\nA[\"<a href='https://example.org/image'><img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNomLDgPwAF9AKw7aBF7QAAAABJRU5ErkJggg==' alt='Native logo' width='30' height='20'/></a><br/>Image label\"] --> B[\"GTK\"]"
+  },
+  {
+    "name": "html-edge-image",
+    "source": "flowchart LR\nA -->|\"<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNomLDgPwAF9AKw7aBF7QAAAABJRU5ErkJggg==' width='30' height='20' alt='Native logo'/> Edge\"| B"
+  },
+  {
+    "name": "html-class-image",
+    "source": "classDiagram\nclass A[\"<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNomLDgPwAF9AKw7aBF7QAAAABJRU5ErkJggg==' width='30' height='20' alt='Native logo'/> Class\"]\nA --> B"
+  },
+  {
+    "name": "html-state-image",
+    "source": "stateDiagram-v2\nstate \"<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNomLDgPwAF9AKw7aBF7QAAAABJRU5ErkJggg==' width='30' height='20' alt='Native logo'/> State\" as A\nA --> B"
+  }
+]

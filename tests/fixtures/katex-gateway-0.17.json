@@ -1,0 +1,288 @@
+{
+  "revision": "15cacd32310868934da44d3c5c6b68ccb6cf458a",
+  "version": "0.17.0",
+  "sourceSHA256": "45fbe318fea878fdc0a111913dc1f87894b2c439360d0228c086ef313f213efc",
+  "groups": [
+    {
+      "name": "independent",
+      "reset": true,
+      "expressions": [
+        {
+          "source": "x^2+y_1=\\frac ab",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msub><mi>y</mi><mn>1</mn></msub><mo>=</mo><mfrac><mi>a</mi><mi>b</mi></mfrac></mrow><annotation encoding=\"application/x-tex\">x^2+y_1=\\frac ab</annotation></semantics></math>"
+        },
+        {
+          "source": "\\dfrac{a+b}{1+x}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mfrac><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>x</mi></mrow></mfrac></mstyle></mrow><annotation encoding=\"application/x-tex\">\\dfrac{a+b}{1+x}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\tfrac12+\\binom nk",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mo>+</mo><mrow><mo fence=\"true\">(</mo><mfrac linethickness=\"0px\"><mi>n</mi><mi>k</mi></mfrac><mo fence=\"true\">)</mo></mrow></mrow><annotation encoding=\"application/x-tex\">\\tfrac12+\\binom nk</annotation></semantics></math>"
+        },
+        {
+          "source": "\\cfrac{1}{1+\\cfrac{1}{x}}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mfrac><mn>1</mn><mi>x</mi></mfrac></mstyle></mrow></mfrac></mstyle></mrow><annotation encoding=\"application/x-tex\">\\cfrac{1}{1+\\cfrac{1}{x}}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\sqrt[3]{x}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mroot><mi>x</mi><mn>3</mn></mroot></mrow><annotation encoding=\"application/x-tex\">\\sqrt[3]{x}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\sum_{n=1}^\\infty\\frac{1}{n^2}=\\frac{\\pi^2}{6}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi mathvariant=\"normal\">∞</mi></munderover><mfrac><mn>1</mn><msup><mi>n</mi><mn>2</mn></msup></mfrac><mo>=</mo><mfrac><msup><mi>π</mi><mn>2</mn></msup><mn>6</mn></mfrac></mrow><annotation encoding=\"application/x-tex\">\\sum_{n=1}^\\infty\\frac{1}{n^2}=\\frac{\\pi^2}{6}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\int_0^\\infty e^{-x^2}dx",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><msubsup><mo>∫</mo><mn>0</mn><mi mathvariant=\"normal\">∞</mi></msubsup><msup><mi>e</mi><mrow><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup></mrow></msup><mi>d</mi><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">\\int_0^\\infty e^{-x^2}dx</annotation></semantics></math>"
+        },
+        {
+          "source": "\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mo fence=\"true\">(</mo><mtable rowspacing=\"0.16em\" columnalign=\"center center\" columnspacing=\"1em\"><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>a</mi></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>b</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>c</mi></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>d</mi></mstyle></mtd></mtr></mtable><mo fence=\"true\">)</mo></mrow><annotation encoding=\"application/x-tex\">\\begin{pmatrix}a&amp;b\\\\c&amp;d\\end{pmatrix}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\begin{bmatrix}1&0\\\\0&1\\end{bmatrix}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mo fence=\"true\">[</mo><mtable rowspacing=\"0.16em\" columnalign=\"center center\" columnspacing=\"1em\"><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mn>0</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence=\"true\">]</mo></mrow><annotation encoding=\"application/x-tex\">\\begin{bmatrix}1&amp;0\\\\0&amp;1\\end{bmatrix}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\begin{smallmatrix}a&b\\\\c&d\\end{smallmatrix}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle scriptlevel=\"1\"><mtable rowspacing=\"0.1em\" columnspacing=\"0.2778em\"><mtr><mtd><mstyle scriptlevel=\"1\" displaystyle=\"false\"><mi>a</mi></mstyle></mtd><mtd><mstyle scriptlevel=\"1\" displaystyle=\"false\"><mi>b</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"1\" displaystyle=\"false\"><mi>c</mi></mstyle></mtd><mtd><mstyle scriptlevel=\"1\" displaystyle=\"false\"><mi>d</mi></mstyle></mtd></mtr></mtable></mstyle></mrow><annotation encoding=\"application/x-tex\">\\begin{smallmatrix}a&amp;b\\\\c&amp;d\\end{smallmatrix}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\begin{aligned}f(x)&=x^2\\\\f'(x)&=2x\\end{aligned}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mtable rowspacing=\"0.25em\" columnalign=\"right left\" columnspacing=\"0em\"><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><mrow></mrow><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><msup><mi>f</mi><mo mathvariant=\"normal\" lspace=\"0em\" rspace=\"0em\">′</mo></msup><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mrow><mrow></mrow><mo>=</mo><mn>2</mn><mi>x</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding=\"application/x-tex\">\\begin{aligned}f(x)&amp;=x^2\\\\f&#x27;(x)&amp;=2x\\end{aligned}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\begin{cases}x^2&x>0\\\\-x&x\\le 0\\end{cases}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mo fence=\"true\">{</mo><mtable rowspacing=\"0.36em\" columnalign=\"left left\" columnspacing=\"1em\"><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><msup><mi>x</mi><mn>2</mn></msup></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mrow><mo>−</mo><mi>x</mi></mrow></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mrow><mi>x</mi><mo>≤</mo><mn>0</mn></mrow></mstyle></mtd></mtr></mtable></mrow><annotation encoding=\"application/x-tex\">\\begin{cases}x^2&amp;x&gt;0\\\\-x&amp;x\\le 0\\end{cases}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\begin{array}{c|r}a&b\\\\\\hline c&d\\end{array}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mtable rowspacing=\"0.16em\" columnalign=\"center right\" columnlines=\"solid\" columnspacing=\"1em\" rowlines=\"solid\"><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>a</mi></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>b</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>c</mi></mstyle></mtd><mtd><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mi>d</mi></mstyle></mtd></mtr></mtable><annotation encoding=\"application/x-tex\">\\begin{array}{c|r}a&amp;b\\\\\\hline c&amp;d\\end{array}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\left\\langle x,y\\right\\rangle",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mo fence=\"true\">⟨</mo><mi>x</mi><mo separator=\"true\">,</mo><mi>y</mi><mo fence=\"true\">⟩</mo></mrow><annotation encoding=\"application/x-tex\">\\left\\langle x,y\\right\\rangle</annotation></semantics></math>"
+        },
+        {
+          "source": "\\overbrace{a+b}^{n}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mover><mover><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow><mo stretchy=\"true\">⏞</mo></mover><mi>n</mi></mover></mrow><annotation encoding=\"application/x-tex\">\\overbrace{a+b}^{n}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\underbrace{a+b}_{n}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><munder><munder><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow><mo stretchy=\"true\">⏟</mo></munder><mi>n</mi></munder></mrow><annotation encoding=\"application/x-tex\">\\underbrace{a+b}_{n}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\overset{!}{=}+\\underset{x}{\\lim}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mo><mover><mo><mo>=</mo></mo><mo stretchy=\"false\" lspace=\"0em\" rspace=\"0em\">!</mo></mover></mo><mo>+</mo><mi><munder><mo><mi>lim</mi><mo>⁡</mo></mo><mi>x</mi></munder></mi></mrow><annotation encoding=\"application/x-tex\">\\overset{!}{=}+\\underset{x}{\\lim}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\widehat{ABC}+\\overrightarrow{xy}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mover accent=\"true\"><mrow><mi>A</mi><mi>B</mi><mi>C</mi></mrow><mo stretchy=\"true\">^</mo></mover><mo>+</mo><mover accent=\"true\"><mrow><mi>x</mi><mi>y</mi></mrow><mo stretchy=\"true\">→</mo></mover></mrow><annotation encoding=\"application/x-tex\">\\widehat{ABC}+\\overrightarrow{xy}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\xrightarrow[below]{above}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><munderover><mo stretchy=\"true\" minsize=\"3.0em\">→</mo><mpadded width=\"+0.6em\" lspace=\"0.3em\"><mrow><mi>b</mi><mi>e</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mpadded><mpadded width=\"+0.6em\" lspace=\"0.3em\"><mrow><mi>a</mi><mi>b</mi><mi>o</mi><mi>v</mi><mi>e</mi></mrow></mpadded></munderover></mrow><annotation encoding=\"application/x-tex\">\\xrightarrow[below]{above}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\cancel x+\\bcancel y+\\xcancel z",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><menclose notation=\"updiagonalstrike\"><mi>x</mi></menclose><mo>+</mo><menclose notation=\"downdiagonalstrike\"><mi>y</mi></menclose><mo>+</mo><menclose notation=\"updiagonalstrike downdiagonalstrike\"><mi>z</mi></menclose></mrow><annotation encoding=\"application/x-tex\">\\cancel x+\\bcancel y+\\xcancel z</annotation></semantics></math>"
+        },
+        {
+          "source": "\\boxed{x}+\\fbox{hello}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><menclose notation=\"box\"><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mstyle scriptlevel=\"0\" displaystyle=\"true\"><mi>x</mi></mstyle></mstyle></mstyle></menclose><mo>+</mo><menclose notation=\"box\"><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mtext>hello</mtext></mstyle></menclose></mrow><annotation encoding=\"application/x-tex\">\\boxed{x}+\\fbox{hello}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\colorbox{yellow}{x}+\\fcolorbox{red}{blue}{y}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mpadded width=\"+6pt\" height=\"+6pt\" lspace=\"3pt\" voffset=\"3pt\" mathbackground=\"yellow\"><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mtext>x</mtext></mstyle></mpadded><mo>+</mo><mpadded width=\"+6pt\" height=\"+6pt\" lspace=\"3pt\" voffset=\"3pt\" style=\"border: 0.04em solid red\" mathbackground=\"blue\"><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mtext>y</mtext></mstyle></mpadded></mrow><annotation encoding=\"application/x-tex\">\\colorbox{yellow}{x}+\\fcolorbox{red}{blue}{y}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\textcolor{red}{x}+\\color{blue}y",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle mathcolor=\"red\"><mi>x</mi></mstyle><mo>+</mo><mstyle mathcolor=\"blue\"><mi>y</mi></mstyle></mrow><annotation encoding=\"application/x-tex\">\\textcolor{red}{x}+\\color{blue}y</annotation></semantics></math>"
+        },
+        {
+          "source": "\\mathbf{x}+\\mathbb{R}+\\mathcal{F}+\\mathfrak{g}+\\mathscr{L}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi mathvariant=\"bold\">x</mi><mo>+</mo><mi mathvariant=\"double-struck\">R</mi><mo>+</mo><mi mathvariant=\"script\">F</mi><mo>+</mo><mi mathvariant=\"fraktur\">g</mi><mo>+</mo><mi mathvariant=\"script\">L</mi></mrow><annotation encoding=\"application/x-tex\">\\mathbf{x}+\\mathbb{R}+\\mathcal{F}+\\mathfrak{g}+\\mathscr{L}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\boldsymbol{\\alpha}+\\pmb{x}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi mathvariant=\"bold-italic\">α</mi><mo>+</mo><mstyle style=\"text-shadow: 0.02em 0.01em 0.04px\"><mi>x</mi></mstyle></mrow><annotation encoding=\"application/x-tex\">\\boldsymbol{\\alpha}+\\pmb{x}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\operatorname{rank}(A)",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi mathvariant=\"normal\">rank</mi><mo>⁡</mo><mo stretchy=\"false\">(</mo><mi>A</mi><mo stretchy=\"false\">)</mo></mrow><annotation encoding=\"application/x-tex\">\\operatorname{rank}(A)</annotation></semantics></math>"
+        },
+        {
+          "source": "\\text{Пример: }\\alpha+β",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mtext>Пример: </mtext><mi>α</mi><mo>+</mo><mi>β</mi></mrow><annotation encoding=\"application/x-tex\">\\text{Пример: }\\alpha+β</annotation></semantics></math>"
+        },
+        {
+          "source": "\\texttt{literal}+\\mathrm{2H_2+O_2\\to2H_2O}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mtext mathvariant=\"monospace\">literal</mtext><mo>+</mo><mrow><mn>2</mn><msub><mi mathvariant=\"normal\">H</mi><mn>2</mn></msub><mo>+</mo><msub><mi mathvariant=\"normal\">O</mi><mn>2</mn></msub><mo>→</mo><mn>2</mn><msub><mi mathvariant=\"normal\">H</mi><mn>2</mn></msub><mi mathvariant=\"normal\">O</mi></mrow></mrow><annotation encoding=\"application/x-tex\">\\texttt{literal}+\\mathrm{2H_2+O_2\\to2H_2O}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\phantom{x}+\\hphantom{abc}+\\vphantom{\\frac ab}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mphantom><mi>x</mi></mphantom><mo>+</mo><mpadded height=\"0px\" depth=\"0px\"><mphantom><mi>a</mi><mi>b</mi><mi>c</mi></mphantom></mpadded><mo>+</mo><mpadded width=\"0px\"><mphantom><mfrac><mi>a</mi><mi>b</mi></mfrac></mphantom></mpadded></mrow><annotation encoding=\"application/x-tex\">\\phantom{x}+\\hphantom{abc}+\\vphantom{\\frac ab}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\raisebox{1em}{x}+y",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mpadded voffset=\"1em\"><mstyle scriptlevel=\"0\" displaystyle=\"false\"><mtext>x</mtext></mstyle></mpadded><mo>+</mo><mi>y</mi></mrow><annotation encoding=\"application/x-tex\">\\raisebox{1em}{x}+y</annotation></semantics></math>"
+        },
+        {
+          "source": "\\rule{2em}{1em}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mpadded height=\"0em\" voffset=\"0em\"><mspace mathbackground=\"black\" width=\"2em\" height=\"1em\"></mspace></mpadded></mrow><annotation encoding=\"application/x-tex\">\\rule{2em}{1em}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\rule[1em]{2em}{1em}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mpadded height=\"1em\" voffset=\"1em\"><mspace mathbackground=\"black\" width=\"2em\" height=\"1em\"></mspace></mpadded></mrow><annotation encoding=\"application/x-tex\">\\rule[1em]{2em}{1em}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\smash{\\frac ab}+x",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mpadded height=\"0px\" depth=\"0px\"><mfrac><mi>a</mi><mi>b</mi></mfrac></mpadded><mo>+</mo><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">\\smash{\\frac ab}+x</annotation></semantics></math>"
+        },
+        {
+          "source": "\\mathllap{x}+\\mathrlap{y}+z",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mpadded lspace=\"-1width\" width=\"0px\"><mi>x</mi></mpadded><mo>+</mo><mpadded width=\"0px\"><mi>y</mi></mpadded><mo>+</mo><mi>z</mi></mrow><annotation encoding=\"application/x-tex\">\\mathllap{x}+\\mathrlap{y}+z</annotation></semantics></math>"
+        },
+        {
+          "source": "x\\hspace{2em}y\\kern1em z",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>x</mi><mspace width=\"2em\"/><mi>y</mi><mspace width=\"1em\"/><mi>z</mi></mrow><annotation encoding=\"application/x-tex\">x\\hspace{2em}y\\kern1em z</annotation></semantics></math>"
+        },
+        {
+          "source": "\\tag{1}x^2",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mtable width=\"100%\"><mtr><mtd width=\"50%\"></mtd><mtd><msup><mi>x</mi><mn>2</mn></msup></mtd><mtd width=\"50%\"></mtd><mtd><mtext>(1)</mtext></mtd></mtr></mtable><annotation encoding=\"application/x-tex\">\\tag{1}x^2</annotation></semantics></math>"
+        },
+        {
+          "source": "\\tag*{A}x^2",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mtable width=\"100%\"><mtr><mtd width=\"50%\"></mtd><mtd><msup><mi>x</mi><mn>2</mn></msup></mtd><mtd width=\"50%\"></mtd><mtd><mtext>A</mtext></mtd></mtr></mtable><annotation encoding=\"application/x-tex\">\\tag*{A}x^2</annotation></semantics></math>"
+        },
+        {
+          "source": "\\href{https://example.org}{x}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle mathcolor=\"#cc0000\"><mtext>\\href</mtext></mstyle></mrow><annotation encoding=\"application/x-tex\">\\href{https://example.org}{x}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\url{https://example.org}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle mathcolor=\"#cc0000\"><mtext>\\url</mtext></mstyle></mrow><annotation encoding=\"application/x-tex\">\\url{https://example.org}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\htmlClass{evil}{x}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle mathcolor=\"#cc0000\"><mtext>\\htmlClass</mtext></mstyle></mrow><annotation encoding=\"application/x-tex\">\\htmlClass{evil}{x}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\htmlStyle{background:url(https://example.org)}{x}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle mathcolor=\"#cc0000\"><mtext>\\htmlStyle</mtext></mstyle></mrow><annotation encoding=\"application/x-tex\">\\htmlStyle{background:url(https://example.org)}{x}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\includegraphics{file:///tmp/test.png}",
+          "display": true,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mstyle mathcolor=\"#cc0000\"><mtext>\\includegraphics</mtext></mstyle></mrow><annotation encoding=\"application/x-tex\">\\includegraphics{file:///tmp/test.png}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\frac{a}",
+          "display": true,
+          "error": "Unexpected end of input in a macro argument, expected '}'"
+        },
+        {
+          "source": "\\doesNotExist",
+          "display": true,
+          "error": "Undefined control sequence: \\doesNotExist"
+        },
+        {
+          "source": "\\ce{H2O}",
+          "display": true,
+          "error": "Undefined control sequence: \\ce"
+        },
+        {
+          "source": "\\def\\loop{\\loop}\\loop",
+          "display": true,
+          "error": "Too many expansions: infinite loop or need to increase maxExpand setting"
+        }
+      ]
+    },
+    {
+      "name": "persistent",
+      "expressions": [
+        {
+          "source": "\\gdef\\RR{\\mathbb{R}}\\RR",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><mi mathvariant=\"double-struck\">R</mi></mrow><annotation encoding=\"application/x-tex\">\\gdef\\RR{\\mathbb{R}}\\RR</annotation></semantics></math>"
+        },
+        {
+          "source": "\\RR^n",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msup><mi mathvariant=\"double-struck\">R</mi><mi>n</mi></msup></mrow><annotation encoding=\"application/x-tex\">\\RR^n</annotation></semantics></math>"
+        },
+        {
+          "source": "\\def\\local{x}\\local",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">\\def\\local{x}\\local</annotation></semantics></math>"
+        },
+        {
+          "source": "\\local",
+          "display": false,
+          "error": "Undefined control sequence: \\local"
+        },
+        {
+          "source": "\\gdef\\twice#1{#1+#1}\\twice{x}",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><mi>x</mi><mo>+</mo><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">\\gdef\\twice#1{#1+#1}\\twice{x}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\twice{y}",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><mi>y</mi><mo>+</mo><mi>y</mi></mrow><annotation encoding=\"application/x-tex\">\\twice{y}</annotation></semantics></math>"
+        },
+        {
+          "source": "\\global\\let\\RR\\mathbb",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow></mrow><annotation encoding=\"application/x-tex\">\\global\\let\\RR\\mathbb</annotation></semantics></math>"
+        },
+        {
+          "source": "\\RR{C}",
+          "display": false,
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><mi mathvariant=\"double-struck\">C</mi></mrow><annotation encoding=\"application/x-tex\">\\RR{C}</annotation></semantics></math>"
+        }
+      ]
+    }
+  ]
+}

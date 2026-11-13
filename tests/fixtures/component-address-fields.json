@@ -1,0 +1,391 @@
+{
+  "engine": "WebKitGTK 2.54.2",
+  "captured_at": "2026-11-11",
+  "method": "Create input element, set type and value, capture input.value and input.checkValidity(); no network access.",
+  "cases": [
+    {
+      "type": "email",
+      "value": "",
+      "normalized": "",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": "a@b",
+      "normalized": "a@b",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": "a@example.org",
+      "normalized": "a@example.org",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": "first.last+tag@example.org",
+      "normalized": "first.last+tag@example.org",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": "a..b@example.org",
+      "normalized": "a..b@example.org",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": ".a.@example.org",
+      "normalized": ".a.@example.org",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": " a@b ",
+      "normalized": "a@b",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": "a\nb@example.org",
+      "normalized": "ab@example.org",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": "a@пример.рф",
+      "normalized": "a@пример.рф",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "юзер@example.org",
+      "normalized": "юзер@example.org",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@xn--e1afmkfd.xn--p1ai",
+      "normalized": "a@xn--e1afmkfd.xn--p1ai",
+      "valid": true
+    },
+    {
+      "type": "email",
+      "value": "no-at",
+      "normalized": "no-at",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@",
+      "normalized": "a@",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "@b",
+      "normalized": "@b",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@-host.org",
+      "normalized": "a@-host.org",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@host-.org",
+      "normalized": "a@host-.org",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@host_name.org",
+      "normalized": "a@host_name.org",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@host..org",
+      "normalized": "a@host..org",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@host.",
+      "normalized": "a@host.",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "\"name\"@example.org",
+      "normalized": "\"name\"@example.org",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@b,c@d",
+      "normalized": "a@b,c@d",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a b@host.org",
+      "normalized": "a b@host.org",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a @b",
+      "normalized": "a @b",
+      "valid": false
+    },
+    {
+      "type": "email",
+      "value": "a@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.org",
+      "normalized": "a@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.org",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "",
+      "normalized": "",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://example.org/a?x=1#part",
+      "normalized": "https://example.org/a?x=1#part",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": " /relative ",
+      "normalized": "/relative",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "example.org",
+      "normalized": "example.org",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "//example.org",
+      "normalized": "//example.org",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "mailto:a@example.org",
+      "normalized": "mailto:a@example.org",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "urn:isbn:123",
+      "normalized": "urn:isbn:123",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "file:///tmp/a",
+      "normalized": "file:///tmp/a",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "ftp://example.org/a",
+      "normalized": "ftp://example.org/a",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "custom:value",
+      "normalized": "custom:value",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "data:text/plain,hello",
+      "normalized": "data:text/plain,hello",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "javascript:alert(1)",
+      "normalized": "javascript:alert(1)",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "http:example.org",
+      "normalized": "http:example.org",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https:///example.org",
+      "normalized": "https:///example.org",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https:\\example.org\\a",
+      "normalized": "https:\\example.org\\a",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://user:pass@example.org/a",
+      "normalized": "https://user:pass@example.org/a",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://пример.рф/путь",
+      "normalized": "https://пример.рф/путь",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://example.org/a b",
+      "normalized": "https://example.org/a b",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://exa mple.org/",
+      "normalized": "https://exa mple.org/",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "https://example.org:65536/",
+      "normalized": "https://example.org:65536/",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "https://[::1]/",
+      "normalized": "https://[::1]/",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://[bad]/",
+      "normalized": "https://[bad]/",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "https://127.1/",
+      "normalized": "https://127.1/",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://999.999/",
+      "normalized": "https://999.999/",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "https://0x7f.1/",
+      "normalized": "https://0x7f.1/",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://example.org/%zz",
+      "normalized": "https://example.org/%zz",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "file://host:22/a",
+      "normalized": "file://host:22/a",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "custom:hello world",
+      "normalized": "custom:hello world",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://",
+      "normalized": "https://",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "https://#x",
+      "normalized": "https://#x",
+      "valid": false
+    },
+    {
+      "type": "url",
+      "value": "  https://example.org/a  ",
+      "normalized": "https://example.org/a",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://exam\nple.org/a",
+      "normalized": "https://example.org/a",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://exam\tple.org/a",
+      "normalized": "https://exam\tple.org/a",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "custom:",
+      "normalized": "custom:",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "file:",
+      "normalized": "file:",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "about:blank",
+      "normalized": "about:blank",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "custom://",
+      "normalized": "custom://",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://_host/",
+      "normalized": "https://_host/",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://.",
+      "normalized": "https://.",
+      "valid": true
+    },
+    {
+      "type": "url",
+      "value": "https://example.123/",
+      "normalized": "https://example.123/",
+      "valid": false
+    }
+  ]
+}

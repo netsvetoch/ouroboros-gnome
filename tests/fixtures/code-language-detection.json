@@ -1,0 +1,163 @@
+{
+  "source": "razzant/ouroboros@15cacd32310868934da44d3c5c6b68ccb6cf458a/web/highlight.min.js (11.11.1)",
+  "languages": [
+    "bash",
+    "c",
+    "cpp",
+    "csharp",
+    "css",
+    "diff",
+    "go",
+    "graphql",
+    "ini",
+    "java",
+    "javascript",
+    "json",
+    "kotlin",
+    "less",
+    "lua",
+    "makefile",
+    "markdown",
+    "objectivec",
+    "perl",
+    "php",
+    "php-template",
+    "plaintext",
+    "python",
+    "python-repl",
+    "r",
+    "ruby",
+    "rust",
+    "scss",
+    "shell",
+    "sql",
+    "swift",
+    "typescript",
+    "vbnet",
+    "wasm",
+    "xml",
+    "yaml"
+  ],
+  "cases": [
+    {
+      "source": "const value = \"<tag>&\"; // comment\n",
+      "language": "cpp"
+    },
+    {
+      "source": "def greet(name):\n    return \"hello \" + name\n",
+      "language": "python"
+    },
+    {
+      "source": "{\"answer\":42,\"ok\":true}",
+      "language": "json"
+    },
+    {
+      "source": "SELECT id, name FROM users WHERE active = true;",
+      "language": "sql"
+    },
+    {
+      "source": "#!/bin/bash\nprintf \"%s\\n\" \"$HOME\"\n",
+      "language": "bash"
+    },
+    {
+      "source": "fn main() { println!(\"Hello, world!\"); }",
+      "language": "csharp"
+    },
+    {
+      "source": "package main\nimport \"fmt\"\nfunc main() { fmt.Println(\"hello\") }",
+      "language": "go"
+    },
+    {
+      "source": "<!DOCTYPE html>\n<html><body><h1>Hello</h1></body></html>",
+      "language": "php-template"
+    },
+    {
+      "source": "body { background: #ffffff; color: red; }",
+      "language": "css"
+    },
+    {
+      "source": "---\nname: example\nitems:\n  - first\n  - second\n",
+      "language": "yaml"
+    },
+    {
+      "source": "public class Main { public static void main(String[] args) { System.out.println(\"Hi\"); } }",
+      "language": "csharp"
+    },
+    {
+      "source": "#include <stdio.h>\nint main(void) { printf(\"hello\\n\"); return 0; }",
+      "language": "cpp"
+    },
+    {
+      "source": "#include <iostream>\nint main() { std::cout << \"Hello\" << std::endl; }",
+      "language": "cpp"
+    },
+    {
+      "source": "<?php echo \"Hello, world!\"; ?>",
+      "language": "php"
+    },
+    {
+      "source": "#!/usr/bin/env python3\nimport json\nfrom pathlib import Path\ndef load(path: str):\n    return json.loads(Path(path).read_text())\n",
+      "language": "python"
+    },
+    {
+      "source": "interface User { name: string; active: boolean }\nconst user: User = { name: \"hi\", active: true };",
+      "language": "php"
+    },
+    {
+      "source": "```js\nconst a = 1;\n```",
+      "language": "go"
+    },
+    {
+      "source": "1 + 2",
+      "language": null
+    },
+    {
+      "source": "",
+      "language": null
+    },
+    {
+      "source": "Обычный русский текст без структуры.",
+      "language": null
+    },
+    {
+      "source": "(module (func (export \"answer\") (result i32) i32.const 42))",
+      "language": "wasm"
+    },
+    {
+      "source": "query GetUser { user(id: 1) { id name } }",
+      "language": "bash"
+    },
+    {
+      "source": "using System;\nclass Hello { static void Main() { Console.WriteLine(\"Hello\"); } }",
+      "language": "csharp"
+    },
+    {
+      "source": "[section]\nname=value\nenabled=true",
+      "language": "ini"
+    },
+    {
+      "source": "@@ -1,2 +1,2 @@\n-old\n+new\n",
+      "language": "diff"
+    },
+    {
+      "source": "local function greet(name)\n  return \"Hello \" .. name\nend\n",
+      "language": "lua"
+    },
+    {
+      "source": "let name: String = \"Hello\"\nprint(name)",
+      "language": "bash"
+    },
+    {
+      "source": "fun main() { println(\"Hello, world!\") }",
+      "language": "kotlin"
+    },
+    {
+      "source": "require \"json\"\nputs JSON.parse(File.read(\"test.json\"))",
+      "language": "javascript"
+    },
+    {
+      "source": "function greet(name) { return `hello ${name}`; }\nconsole.log(greet(\"world\"));",
+      "language": "javascript"
+    }
+  ]
+}

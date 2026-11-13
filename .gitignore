@@ -6,3 +6,9 @@ dist/
 dist-gjs/
 *.flatpak
 node_modules/
+
+# Local Python test/runtime caches
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/

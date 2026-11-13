@@ -14,5 +14,5 @@
     "types": []
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/main-gjs.ts"]
+  "exclude": ["src/main-gjs.ts", "src/gjs"]
 }

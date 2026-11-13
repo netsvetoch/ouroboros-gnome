@@ -1,0 +1,2 @@
+Logs at /tmp/ouroboros-settings-write-recovery.kcN2p6
+OK: actual generic settings write/read routes preserve ordinary drafts on unknown before/after commit, block replay until separate GET, fresh baseline and explicit save, matching state distinct from receipt, real typed saved=true post-commit response, sensitive-field cleanup and owned recovery GET close before release; no models/providers started

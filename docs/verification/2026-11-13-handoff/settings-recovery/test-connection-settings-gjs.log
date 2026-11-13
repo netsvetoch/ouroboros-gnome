@@ -1,0 +1,2 @@
+Logs at /tmp/ouroboros-connection-settings.ucGggC
+OK: native connection settings with actual NetworkAuthGate/cookie login, independent health/readiness/auth diagnostics, schema failures, large chat ID/private INI roundtrip, persistence failure/retry and one save, shared-session probe cancellation without authority loss, edited URL reprobe, cookie handoff without stored password and cancelled owned login; health/state bodies controlled, no external gateway

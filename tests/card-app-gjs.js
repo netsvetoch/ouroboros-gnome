@@ -1,0 +1,33 @@
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw?version=1';
+import {exit} from 'system';
+const {Gateway}=await import(ARGV[0]+'gateway.js');
+const {Cards}=await import(ARGV[0]+'cards.js');
+const check=(v,m)=>{if(!v)throw new Error(m)};
+const wait=ms=>new Promise(resolve=>GLib.timeout_add(0,ms,()=>{resolve();return GLib.SOURCE_REMOVE}));
+async function until(fn,m){for(let i=0;i<900;i++){if(await fn())return;await wait(20)}throw new Error(m)}
+const app=new Adw.Application({application_id:GLib.getenv('FLATPAK_ID')??'io.github.ouroboros.Client.CardAppTests',flags:Gio.ApplicationFlags.NON_UNIQUE});let failed=false;
+app.connect('activate',()=>{
+ const win=new Adw.ApplicationWindow({application:app,default_width:1000,default_height:850});win.present();const gateway=new Gateway(ARGV[1],'fixture-secret'),cards=new Cards(win,gateway),lines=[];let accepted=false,focus=0,live,stage='real card app loading';const style=Adw.StyleManager.get_default(),original=style.color_scheme;
+ const facts=()=>gateway.json('GET','/fixture/facts');const control=value=>gateway.json('POST','/fixture/control',value);
+ const resultLine='From «App»: Exact result <&> {"answer":42}';let appended=0;
+ const draft={append:line=>{lines.push(line);const ok=accepted&&line===resultLine;if(ok)appended++;return ok},focus:()=>focus++};
+ const reports=phase=>lines.filter(line=>line.startsWith('From «App»: '+phase+' ')).map(line=>JSON.parse(line.slice(('From «App»: '+phase+' ').length)));
+ const open=async identity=>{cards.show(identity,'',draft);live=cards.dialogs.get(identity.card_id);await until(()=>live.appView?.run?.ready||live.appView?.status?.label?.includes('не совпала')||live.appView?.status?.label?.includes('формате')||live.appView?.status?.label?.includes('недоступно'),'app load did not settle');return live.appView};
+ const command=async(name,view=live.appView)=>{const browser=view.run.view;return new Promise((resolve,reject)=>browser.evaluate_javascript(`document.querySelector('iframe').contentWindow.postMessage(${JSON.stringify({fixtureAction:name})},'*');`,-1,null,null,null,(_v,r)=>{try{browser.evaluate_javascript_finish(r);resolve()}catch(error){reject(error)}}))};
+ (async()=>{
+  const identity=(await facts()).app;let view=await open(identity);await until(()=>reports('boot').length===1,'real app code did not submit boot proof');let proof=reports('boot')[0];check(proof.mount===1&&proof.before===null&&proof.origin==='null'&&!proof.parentDOM&&!proof.cookie&&!proof.storage,'opaque app boundary/state wrong '+JSON.stringify(proof));check(view.status.label.includes('Черновик сейчас занят'),'rejected draft append not explained');
+  const saved=cards.appStates.get('app:'+identity.card_id+':'+identity.app.sha256);check(JSON.parse(saved).text==='Состояние <&> 😀','state not saved under card/content identity');
+  stage='state size, resize and result cap';await command('limits');await until(()=>reports('limits').length===1,'state limit proof absent');check(reports('limits')[0].exceeded&&reports('limits')[0].unchanged,'32 KiB UTF8 bound failed');await until(()=>view.height>=777,'resize not received');check(view.run.view.get_size_request()[1]<=Math.floor(win.get_height()*.7),'inline height cap absent');view.expand.emit('clicked');check(view.run.view.get_size_request()[1]>=777,'expanded frame remained capped');await command('large');await until(()=>lines.some(l=>l==='From «App»: Large result <&>'),'large value leaked or summary not normalized');
+  stage='theme and prohibited network';style.color_scheme=Adw.ColorScheme.FORCE_DARK;await until(()=>reports('theme').some(p=>p.theme==='dark'&&p.attribute==='dark'&&p.token),'dark theme missing');style.color_scheme=Adw.ColorScheme.FORCE_LIGHT;await until(()=>reports('theme').some(p=>p.theme==='light'&&p.attribute==='light'&&p.token),'live light theme missing');await command('blocked');await until(()=>reports('blocked').length===1,'blocked fetch proof missing');check(reports('blocked')[0].rejected,'app network fetch succeeded');
+  stage='fault and remount state';await command('fault');await until(()=>view.status.label.includes('Card fixture rejection <&>'),'native app fault caption missing');live.close();await until(()=>!cards.dialogs.has(identity.card_id),'dialog not closed');view=await open(identity);await until(()=>reports('boot').length===2,'app did not remount');proof=reports('boot')[1];check(proof.mount===2&&proof.before==='Состояние <&> 😀','state was not restored');
+  stage='real Cards result draft callback';accepted=true;await command('submit');await until(()=>!cards.dialogs.has(identity.card_id)&&focus===1,'accepted result did not close/focus draft');check(appended===1&&lines.includes(resultLine),'result line changed');let f=await facts();check(!f.audit.some(r=>r.method==='POST'&&(r.path==='/api/decisions'||r.path.includes('/chat'))),'app submit sent owner message');
+  stage='checked app bytes/type/missing before execution';accepted=false;
+  for(const mode of ['corrupt','mime','missing']){const count=reports('boot').length;await control({app:mode});view=await open(identity);check(!view.run&&reports('boot').length===count,'unverified HTML executed: '+mode);live.close();await until(()=>!cards.dialogs.has(identity.card_id),'bad app dialog not closed')}
+  await control({app:''});
+  stage='self navigation closes frame and stale controls are inert';view=await open(identity);await until(()=>reports('boot').length===3,'third app did not execute');const button=view.toggle;await command('navigate');await until(()=>!view.run,'self navigation kept app alive');check(view.status.label.includes('другой документ'),'navigation closure not explained');live.close();await until(()=>!cards.dialogs.has(identity.card_id),'last dialog not closed');const before=(await facts()).audit.length;button.emit('clicked');await wait(100);check((await facts()).audit.length===before,'closed app control sent request');cards.close();check(cards.appStates.size===0,'session state retained after Cards.close');
+  print('OK: real card store/app route and Cards/CardApp/WebKit runtime; opaque DOM/cookie/storage boundary, UTF8 state limit and hash-keyed remount state, native resize/theme/fault, large result cap and exact draft append/focus without owner send; corrupt bytes/wrong MIME/missing app refused before execution, self navigation closes frame, stale controls inert and state released; synthetic finite HTML, no models');
+ })().catch(error=>{failed=true;logError(error);print('Stage: '+stage);print('App status: '+live?.appView?.status?.label)}).finally(()=>{style.color_scheme=original;cards.close();gateway.close();win.close();app.quit()});
+});await app.runAsync([]);exit(failed?1:0);

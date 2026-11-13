@@ -1,0 +1,66 @@
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw?version=1';
+import {exit} from 'system';
+const {Gateway}=await import(ARGV[0]+'gateway.js');
+const {ChatPage}=await import(ARGV[0]+'chat.js');
+const {DictationAudio}=await import(ARGV[0]+'dictation-audio.js');
+const {acquireCapture}=await import(ARGV[0]+'capture-lease.js');
+const check=(ok,message)=>{if(!ok)throw Error(message)};
+const wait=ms=>new Promise(resolve=>GLib.timeout_add(0,ms,()=>{resolve();return GLib.SOURCE_REMOVE}));
+async function until(fn,message){for(let i=0;i<800;i++){if(await fn())return;await wait(15)}throw Error(message)}
+function all(w,p){const found=p(w)?[w]:[];for(let c=w.get_first_child?.();c;c=c.get_next_sibling())found.push(...all(c,p));return found}
+const app=new Adw.Application({application_id:GLib.getenv('FLATPAK_ID')??'io.github.ouroboros.Client.LocalDictationTests',flags:Gio.ApplicationFlags.NON_UNIQUE});let failed=false;
+app.connect('activate',()=>{
+ const win=new Adw.ApplicationWindow({application:app,default_width:1000,default_height:950});
+ const gateway=new Gateway(ARGV[1],'');let chat,stage='catalog',starts=0,uploads=0,source=`filesrc location="${ARGV[2]}/speech.wav" blocksize=320 ! identity sleep-time=1000 ! wavparse`;
+ const start=DictationAudio.prototype.start,audio=gateway.audio;
+ DictationAudio.prototype.start=function(){starts++;this.source=source;return start.call(this)};
+ gateway.audio=function(...args){uploads++;return audio.apply(this,args)};
+ const choose=async label=>{
+  const d=chat.dictation;d.choose();await until(()=>d.dialog?.get_mapped()&&all(d.dialog.get_child(),w=>w instanceof Gtk.Button&&w.label===label).length,'chooser button absent: '+label);
+  const pick=all(d.dialog.get_child(),w=>w instanceof Gtk.Button&&w.label===label)[0];check(pick.sensitive,'choice disabled: '+label);pick.emit('clicked');await until(()=>!d.dialog,'chooser did not close');
+ };
+ const available=()=>{const lease=acquireCapture({},'test available',['audio']);lease.release()};
+ (async()=>{
+  await gateway.json('POST','/api/ui/preferences',{voice:{stt:'native_actions:speech',tts:'',tts_voice:''}});
+  chat=new ChatPage(win,gateway,{chatId:1,name:'Main'},()=>{});win.set_content(chat.widget);win.present();
+  await until(()=>chat.contributions.current.contributions?.some(c=>c.key==='native_actions:speech')&&!chat.draft.recovering,'catalog/draft not ready');
+  const d=chat.dictation;let saves=0;const save=chat.contributions.saveVoice;
+  chat.contributions.saveVoice=function(...args){saves++;return save.apply(this,args)};
+  check(d.local.available,'packaged decoder/model not available');
+  await choose('PocketSphinx · English (US)');
+  check(d.localSelected&&saves===0&&chat.contributions.current.preferences.voice.stt==='native_actions:speech','native choice changed gateway preference');
+  check(d.mic.tooltip_text.includes('English (US)')&&d.mic.tooltip_text.includes('устройстве'),'local destination/language missing');
+  stage='actual recording and real model';chat.composer.text='Before ';chat.composer.set_position(-1);d.mic.emit('clicked');
+  check(d.active?.local&&d.active.recorder,'local native recording not started');
+  let busy=false;try{acquireCapture({},'competing',['audio'])}catch(e){busy=e.code==='in_use'}check(busy,'recording did not own microphone lease');
+  await until(()=>!d.active,'native recognition did not finish');
+  check(chat.composer.text==='Before go forward ten meters','actual native transcript not inserted: '+chat.composer.text);available();
+  stage='edited draft offer';d.mic.emit('clicked');await until(()=>d.local.active?.phase==='decode','real decoder did not start');chat.composer.text='Edited during recognition';
+  await until(()=>!d.active,'edited decode pending');check(chat.composer.text==='Edited during recognition'&&d.offers.get(1)==='go forward ten meters','edited draft overwritten');
+  d.offerInsert.emit('clicked');check(chat.composer.text.includes('go forward ten meters')&&!d.offers.has(1),'explicit offer insertion failed');
+  stage='room isolation';d.mic.emit('clicked');await until(()=>d.local.active?.phase==='decode','other room decoder absent');
+  const project=(await gateway.json('GET','/fixture/facts')).project;chat.setRoom({chatId:project.chat_id,projectId:project.id,name:'Other'});
+  await until(()=>!chat.draft.recovering,'other room draft not ready');chat.composer.text='Other room untouched';
+  await until(()=>!d.active,'original room decode pending');check(chat.composer.text==='Other room untouched'&&d.offers.get(1)==='go forward ten meters','native transcript crossed room');
+  chat.setRoom({chatId:1,name:'Main'});await until(()=>!chat.draft.recovering,'Main not restored');check(d.offerInsert,'original room offer missing');
+  const beforeInsert=chat.composer.text;d.offerInsert.emit('clicked');check(chat.composer.text!==beforeInsert,'original room explicit insertion failed');
+  stage='record cancellation and room leave';source='audiotestsrc is-live=true wave=silence';
+  let text=chat.composer.text;d.mic.emit('clicked');check(d.active.recorder,'cancel recording absent');d.cancelButton.emit('clicked');available();await wait(60);check(!d.active&&chat.composer.text===text,'record cancel inserted text');
+  d.mic.emit('clicked');const recorder=d.active.recorder;chat.setRoom({chatId:project.chat_id,projectId:project.id,name:'Other'});check(!d.active&&recorder.closed,'leave did not stop native capture');available();
+  chat.setRoom({chatId:1,name:'Main'});await until(()=>!chat.draft.recovering,'Main recovery after leave');
+  stage='digital silence';source=`filesrc location="${ARGV[2]}/silence.wav" ! wavparse`;text=chat.composer.text;d.mic.emit('clicked');await until(()=>!d.active,'silent recording pending');check(chat.composer.text===text&&d.status.label.includes('не распознана'),'digital silence inserted words');
+  stage='non-speech with VAD';source=`filesrc location="${ARGV[2]}/noise.wav" ! wavparse`;text=chat.composer.text;d.mic.emit('clicked');await until(()=>!d.active,'noise VAD pending');check(chat.composer.text===text&&d.status.label.includes('не распознана'),'non-speech noise inserted words');
+  stage='decoder cancel and emergency stop';source=`filesrc location="${ARGV[2]}/speech.wav" ! wavparse`;
+  d.mic.emit('clicked');await until(()=>d.local.active?.phase==='decode','cancellable decoder missing');const cancelled=d.active.cancellable;d.cancelButton.emit('clicked');await until(()=>!d.local.active,'cancelled decoder retained');check(cancelled.is_cancelled()&&chat.composer.text===text,'decoder cancellation inserted words');
+  source='audiotestsrc is-live=true wave=silence';d.mic.emit('clicked');const panicRecorder=d.active.recorder;const panic=chat.requestPanic();panic?.catch(()=>{});check(!d.active&&panicRecorder.closed,'Panic left local capture');available();
+  stage='explicit server choice';await choose('Fixture speech');check(!d.localSelected&&saves===1&&chat.contributions.current.preferences.voice.stt==='native_actions:speech','return to actual server preference failed');
+  check(d.mic.tooltip_text.includes('шлюзе'),'server destination not restored');await choose('PocketSphinx · English (US)');check(saves===1,'second local choice wrote gateway setting');
+  stage='close and stale controls';d.mic.emit('clicked');const closeRecorder=d.active.recorder;const count=starts;await chat.close();check(!d.active&&closeRecorder.closed&&d.local.closed,'close did not stop native capture/decoder');available();d.mic.emit('clicked');d.choose();await wait(50);check(starts===count&&!d.dialog,'closed controls restarted capture');
+  check(uploads===0,'local audio used Gateway.audio');
+  const serverAudio=(await gateway.json('GET','/api/extensions/native_actions/facts')).audio;check(serverAudio.length===0,'audio reached server transcription route');
+  print('OK: actual GTK ChatPage local chooser -> GStreamer original human WAV -> real PocketSphinx English model -> native draft; explicit local-only choice preserves real gateway preference, location/language/limit disclosure, edited draft offers, original-room isolation and explicit insert, global mic lease, cancel/leave/Panic/close and stale controls, digital silence, return to server choice, no Gateway.audio/server speech upload; prerecorded speech/synthetic silence, no physical microphone or browser SpeechRecognition claim');
+ })().catch(e=>{failed=true;logError(e);print('Stage: '+stage);print('Status: '+chat?.dictation.status.label)}).finally(async()=>{await chat?.close();DictationAudio.prototype.start=start;gateway.close();win.close();app.quit()});
+});await app.runAsync([]);exit(failed?1:0);
